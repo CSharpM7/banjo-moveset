@@ -1,0 +1,7 @@
+**/target
+**/*.py
+**/*.pyc
+Cargo.lock
+**/.vscode
+**/src/custom
+**/src/mario
