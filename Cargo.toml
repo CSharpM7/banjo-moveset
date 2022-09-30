@@ -11,7 +11,7 @@ titleid = "01006A800016E000"
 crate-type = ["cdylib"]
 
 [dependencies]
-utils = { package = "dynamic", path = "../../hdr/dynamic" }
+utils = { package = "dynamic", path = "../../hdr/HewDraw-Remix/dynamic" }
 skyline = { git = "https://github.com/ultimate-research/skyline-rs.git" }
 skyline_smash = { git = "https://github.com/blu-dev/skyline-smash.git", features = ["weak_l2cvalue"] }
 smash_script = { git = "https://github.com/blu-dev/smash-script.git", branch = "development" }

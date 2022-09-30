@@ -16,15 +16,22 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon){
 }
 
 unsafe fn wonderwing_cancel(fighter: &mut L2CFighterCommon){ 
-    let status = StatusModule::status_kind(fighter.module_accessor);
+    //let status = StatusModule::status_kind(fighter.module_accessor);
     let isGuarding = fighter.is_button_on(Buttons::Guard);
-    let sideSpecial = fighter.is_status(*FIGHTER_STATUS_KIND_SPECIAL_S);
+    let sideSpecial = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH);
     let inAir = fighter.is_situation(*SITUATION_KIND_AIR);
     let cancelFrame = 10.0;
     let canCancel = fighter.motion_frame() >= cancelFrame;
-    if (sideSpecial && !inAir && isGuarding && canCancel)
+    if (sideSpecial && isGuarding && canCancel)
     {
-        fighter.change_status_req(*FIGHTER_STATUS_KIND_GUARD_ON, true);
+        if (inAir)
+        {
+            fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH, true);
+        }
+        else
+        {
+            fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH, true);
+        }
     }
     //let lastWWFrame = 17.0;
     //let inLastWWFrame = fighter.motion_frame() >= lastWWFrame;
