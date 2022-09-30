@@ -1,0 +1,1 @@
+cargo skyline build --release
