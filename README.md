@@ -42,3 +42,6 @@ Specs:
 - BKB: 42 -> 50
 + Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
 ```
+
+## UpSpecial
+Falling hitbox size increased to more accurately reflect the model

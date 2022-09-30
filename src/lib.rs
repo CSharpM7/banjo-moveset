@@ -2,6 +2,7 @@
 #![feature(proc_macro_hygiene)]
 
 pub mod buddy;
+pub mod buddy_pad;
 
 use smash::{
     lib::{
@@ -37,5 +38,7 @@ use utils::{
 
 #[skyline::main(name = "smashline_banjo")]
 pub fn main() {
+    println!("[smashline_buddy::main] GUH-HUH!");
     buddy::install();
+    buddy_pad::install();
 }

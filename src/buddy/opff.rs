@@ -8,9 +8,30 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon){
     let inAir = fighter.is_situation(*SITUATION_KIND_AIR);
     let lastWWFrame = 17.0;
     let inLastWWFrame = fighter.motion_frame() >= lastWWFrame;
-    if (sideSpecial && inAir) && inLastWWFrame//(fighter.is_button_on(Buttons::Guard)
+    //if (sideSpecial && inAir) && inLastWWFrame//(fighter.is_button_on(Buttons::Guard)
     {
-        fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, true);
+        //println!("It'sa me, Mario, wahoooooooo!");
+        //fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, true);
+    }
+}
+
+unsafe fn wonderwing_cancel(fighter: &mut L2CFighterCommon){ 
+    let status = StatusModule::status_kind(fighter.module_accessor);
+    let isGuarding = fighter.is_button_on(Buttons::Guard);
+    let sideSpecial = fighter.is_status(*FIGHTER_STATUS_KIND_SPECIAL_S);
+    let inAir = fighter.is_situation(*SITUATION_KIND_AIR);
+    let cancelFrame = 10.0;
+    let canCancel = fighter.motion_frame() >= cancelFrame;
+    if (sideSpecial && !inAir && isGuarding && canCancel)
+    {
+        fighter.change_status_req(*FIGHTER_STATUS_KIND_GUARD_ON, true);
+    }
+    //let lastWWFrame = 17.0;
+    //let inLastWWFrame = fighter.motion_frame() >= lastWWFrame;
+    //if (sideSpecial && inAir) && inLastWWFrame//(fighter.is_button_on(Buttons::Guard)
+    {
+        //println!("It'sa me, Mario, wahoooooooo!");
+        //fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, true);
     }
 }
 
@@ -19,6 +40,7 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon){
 fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
         beakbomb_check(fighter);
+        wonderwing_cancel(fighter);
     }
 }
 
