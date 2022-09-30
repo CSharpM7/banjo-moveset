@@ -15,10 +15,12 @@ Disadvantages:
 - Weaker hitboxes don't lead into much
 
 Specs:
-- Hitboxes on frames 8-12, 15-19,25-29
+```diff
+! Hitboxes on frames 8-12, 15-19,25-29
 - Autocancellable on frames 1-6, 42+
-- Landing lag: 8
++ Landing lag: 8
 - Final Frame: 54
+```
 
 ## Upsmash
 Up smash is now Banjo's uptilt. The changes below are the differences between his original uptilt.
@@ -32,9 +34,11 @@ Disadvantages:
 - Kills about 2% later than the original uptilt
 - FAF is later, making this move less spammable and less safe on shield
 
+```diff
 Specs:
 - Total Frames: +7
 - FAF: 32 -> 48
 - KBG: 110 -> 109
 - BKB: 42 -> 50
-- Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
++ Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
+```
