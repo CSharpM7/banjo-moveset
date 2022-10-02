@@ -5,3 +5,4 @@ Cargo.lock
 **/.vscode
 **/src/custom
 **/src/mario
+*.lnk

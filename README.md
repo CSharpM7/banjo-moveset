@@ -29,19 +29,43 @@ Advantages:
 - No longer a multihit
 - Stronger than the original upsmash
 - Has a launch hitbox at the bottom, hitting small characters and burried foes
+- Kills about 10% earlier than the original uptilt
 
 Disadvantages:
-- Kills about 2% later than the original uptilt
-- FAF is later, making this move less spammable and less safe on shield
+- FAF is later, making this move less spammable
+- Less safe on shield
 
 ```diff
 Specs:
 - Total Frames: +7
 - FAF: 32 -> 48
-- KBG: 110 -> 109
-- BKB: 42 -> 50
+- Shield Advantage: -10 -> -22
+! KBG: 110 -> 87
+! BKB: 42 -> 40
++ Damage: 10 -> 15/16
 + Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
 ```
 
-## UpSpecial
+## Shock Spring Pad (Up Special)
 Falling hitbox size increased to more accurately reflect the model
+
+## Wonderwing (Side Special Ground)
+After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward, making the move slightly safer on whiff. Guard-canceling will deactivate the hitbox.
+
+## Beakbomb (Side Special Air)
+A new aerial side special that acts like an overall nerf to wonderwing, but also helps Banjo! This move has no invisibility and a smaller hitbox, but has brief 7% armor on startup, and will send Banjo further and costs no gold feathers to use. Banjo can also slightly control his trajectory, but will bail out if he lands on the ground too early. You can also Zdrop items while in the dash animation, transforming Kazooie into the Beak Bomber!
+
+```diff
+Specs:
+- Startup: 18 -> 22
+- FAF: 30 -> 45
+- Invincibility removed
+- Hitbox size decreased
+- Self damage on landing (during certain frames)
+! Items can be ZDropped
+! Armor on frames 1-4
+! Bounceback on shield
++ Airspeed: 4.5 -> 5.0
++ Trajectory control
++ Landing hitbox (Active for 2 frames)
+```

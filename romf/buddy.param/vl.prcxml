@@ -138,9 +138,9 @@
       <float hash="start_max_speed_y_mul_air">1</float>
       <float hash="start_speed_y_air">0</float>
       <float hash="start_speed_y_mul_air">0</float>
-      <float hash="start_speed_y_add_air">0</float>
+      <float hash="start_speed_y_add_air">-10</float>
 	  
-      <float hash="dash_speed_x_air">5.5</float>
+      <float hash="dash_speed_x_air">5.0</float>
       <float hash="dash_accel_x_air">-0.11</float>
       <float hash="dash_speed_x_limit_air">5.5</float>
       <float hash="dash_speed_x_min_air">2.2</float>
