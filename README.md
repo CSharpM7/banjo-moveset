@@ -1,5 +1,9 @@
 # Old Bear, New Tricks
 
+## Credits
+SUM fighter-code-edits channel: invaluable help
+HDR Dev Team: Opensource macros used to help make this possible
+
 ## Nair
 Banjo now has an extremely versatile nair! Banjo swings his backpack 360 degrees, hitting in front, behind and then in front again. The bag is the sweetspot, while Banjo's arms are the sourspot. The first hit is the strongest, comparable to a slightly weaker Samus nair. The back hit is noticeably weaker, but gets opponents off of you. For the final hit, the sweetspot pops opponents up which can lead into fair/upsmash, but is harder to land.
 
@@ -62,9 +66,11 @@ Specs:
 - Invincibility removed
 - Hitbox size decreased
 - Self damage on landing (during certain frames)
+- Damage: 22/16 -> 16/10
 ! Items can be ZDropped
 ! Armor on frames 1-4
 ! Bounceback on shield
++ No longer uses Gold Feathers
 + Airspeed: 4.5 -> 5.0
 + Trajectory control
 + Landing hitbox (Active for 2 frames)
