@@ -41,8 +41,8 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     if AttackModule::is_infliction_status(boma,*COLLISION_KIND_MASK_HIT) {return;}
 
     //Movement
-    let mut motion_y = 0.5;
-    let motion_offset = -0.25;
+    let mut motion_y = 0.375;
+    let motion_offset = -0.375;
     let stick_y: f32 = ControlModule::get_stick_y(boma);
     if (stick_y.abs())<0.1
     {
@@ -75,7 +75,7 @@ unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut Battle
 unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let IsGrounded = fighter.is_situation(*SITUATION_KIND_GROUND);
     let cancelFrame = 5.0;
-    let cancelCutoff = 25.0;
+    let cancelCutoff = 20.0;
     let canFail = cancelFrame < fighter.motion_frame() && fighter.motion_frame() < cancelCutoff;
     if !(IsGrounded && canFail) {return;}
 
@@ -85,6 +85,13 @@ unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut Battl
 }
 
 unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+    let InAir = fighter.is_prev_situation(*SITUATION_KIND_AIR);
+    if (InAir)
+    {
+        BAYONET_STATE=1;
+        return;
+    }
+
     let status = StatusModule::status_kind(fighter.module_accessor);
     if [
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
@@ -103,9 +110,8 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
                 BAYONET_STATE=1;
             }
         }
-        else
+        else //Force change if previous block did not work
         {
-            println!("CHANGE PLEASE");
             fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
         }
     }
@@ -114,7 +120,6 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         let transitionFrame = 21.0;
         let canCancel = fighter.motion_frame() >= transitionFrame;
         if (!canCancel) {return;}
-        println!("Return");
         BAYONET_STATE=2;
         fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START, true);
     }
@@ -125,9 +130,12 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         let transitionFrame = 26.0;
         ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transitionFrame);
         MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, transitionFrame, true, true, false);
-        println!("Transition");
     }
-    else if AttackModule::is_infliction_status(boma,*COLLISION_KIND_MASK_HIT)
+    //If Breegull was cancelled (in)voluntarily, revert state
+    else if [
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END,
+        *FIGHTER_STATUS_KIND_DAMAGE
+    ].contains(&status)
     {
         BAYONET_STATE=0;
     }

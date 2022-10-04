@@ -133,7 +133,7 @@ unsafe fn buddy_special_air_s_dash_sound(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;    
     frame(lua_state, 1.0);
     if is_excute(fighter) {
-        PLAY_STATUS(fighter, Hash40::new("se_buddy_smash_h01"));
+        PLAY_STATUS(fighter, Hash40::new("se_buddy_smash_h06"));
         //PLAY_STATUS(fighter, Hash40::new("vc_buddy_attackhard_l01"));
     }
     frame(lua_state, 2.0);
