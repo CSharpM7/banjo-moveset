@@ -40,7 +40,7 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
 
-    WorkModule::is_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+    //WorkModule::is_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
     frame(lua_state, 3.0);
     if is_excute(fighter) {
         FLASH(fighter, 1, 0.4, 0, 0.2);
@@ -53,6 +53,7 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         COL_NORMAL(fighter);
     }
+    /*
     frame(lua_state, 12.0);
     if is_excute(fighter) {
         FLASH(fighter, 1, 1, 0.4, 0.3);
@@ -62,6 +63,7 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
         FLASH(fighter, 1, 0.3, 0, 0.4);
     }
     wait(lua_state, 2.0);
+    */
 }
 
 #[acmd_script( agent = "buddy", script = "effect_specialairsdash", category = ACMD_EFFECT )]
@@ -85,15 +87,16 @@ unsafe fn buddy_special_air_s_dash_effect(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         EFFECT(fighter, Hash40::new("sys_atk_smoke"), Hash40::new("top"), -5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false);
         LANDING_EFFECT(fighter, Hash40::new("null"), Hash40::new("top"), 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false);
-        FLASH(fighter, 1, 1, 0.6, 0.3);
+        //FLASH(fighter, 1, 1, 0.6, 0.3);
         }
     frame(lua_state, 3.0);
     if is_excute(fighter) {
         //EFFECT_FOLLOW(fighter, Hash40::new("buddy_special_s_after_image"), Hash40::new("top"), 0, 0, 0, 0, 0, 0, 1, true);
         EffectModule::enable_sync_init_pos_last(boma);
         LANDING_EFFECT(fighter, Hash40::new("sys_dash_smoke"), Hash40::new("top"), -2, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, false);
-        FLASH(fighter, 1, 0.3, 0, 0.4);
+        //FLASH(fighter, 1, 0.3, 0, 0.4);
         }
+    /* 
     wait(lua_state, 2.0);
     if is_excute(fighter) {
         FLASH(fighter, 1, 1, 0.6, 0.3);
@@ -111,6 +114,7 @@ unsafe fn buddy_special_air_s_dash_effect(fighter: &mut L2CAgentBase) {
         FLASH(fighter, 1, 1, 0.6, 0.3);
     }
     wait(lua_state, 2.0);
+    */
 }
 
 #[acmd_script( agent = "buddy", script = "sound_specialairsstart", category = ACMD_SOUND )]
@@ -120,7 +124,10 @@ unsafe fn buddy_special_air_s_start_sound(fighter: &mut L2CAgentBase) {
     
     //WorkModule::is_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
     if is_excute(fighter) {
-        PLAY_SE(fighter, Hash40::new("vc_buddy_smash_h01_vc"));
+        let play_vc = app::sv_math::rand(hash40("fighter"), 3);
+        if play_vc == 0 {
+            PLAY_SE(fighter, Hash40::new("vc_buddy_smash_h01_vc"));
+        }
     }
     frame(lua_state, 3.0);
     if is_excute(fighter) {

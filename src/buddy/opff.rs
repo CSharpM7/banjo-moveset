@@ -80,7 +80,8 @@ unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut Battl
     if !(IsGrounded && canFail) {return;}
 
     DamageModule::add_damage(fighter.module_accessor, 10.0,0);
-    fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, true);
+    fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, false);
+    //fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
     PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot01"));
 }
 

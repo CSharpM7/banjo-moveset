@@ -93,3 +93,13 @@ Specs:
 + Trajectory control
 + Landing hitbox (Active for 2 frames)
 ```
+
+# Summary
+
+With these specific changes, Banjo becomes much less of a linear character, especially when trying to seal a stock. His gameplan can now revolve around properly trapping opponents into uncomfortable situations, and pushing them offstage where his arsenal of tricks can gimp them, or deny them of returning to the stage. His more infamous tools have been greatly toned down, which should help playing as (and playing against) Banjo become a little more enjoyable.
+
+## Buffs
+His new nair helps push opponents further back, potentially leading them offstage where Banjo shines best. If your spacing is on point, you can also confirm a kill of the sweetspot of nair, similar to Marth/Lucina/Chrom/Roy, but more telegraphed. His original uptilt moves to a smash attack, and is granted a brand new uptilt. While this makes the new upsmash less safe on shield and less spammable, his new uptilt allows Banjo to box and juggle better. Burying opponents also leads closer to a kill, as upsmash can hit buried opponents.
+
+## Nerfs
+His new aerial side B might be more versatile as a recovery move, but it lacks any invincibility which allows opponents to spike and edgeguard him without fear. Opponents can also land on the stage without the fear of buffering an airdodge/attack right into an invincible kill move. The Beak Bayonet (Neutral B Stance Smash Attack) has the unique function of removing TAS Shot and Smash Turnaround Cancels. While it does let Breegull Blaster become slightly more safe in close range, Banjo won't be able to take a stock at 60% off this stance. Landing cancels still remain, though. In short, opponents no longer need to worry about "cheese"
