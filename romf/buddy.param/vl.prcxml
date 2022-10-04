@@ -109,7 +109,10 @@
     </struct>
   </list>
   <list hash="param_special_n">
-    <hash40 index="0">dummy</hash40>
+    <struct index="0">
+      <int hash="bakyun_power_down_1_num">12</int>
+      <int hash="bakyun_power_down_2_num">12</int>
+    </struct>
     <hash40 index="1">dummy</hash40>
     <hash40 index="2">dummy</hash40>
     <hash40 index="3">dummy</hash40>

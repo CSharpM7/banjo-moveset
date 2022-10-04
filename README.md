@@ -50,6 +50,25 @@ Specs:
 + Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
 ```
 
+## Breegull Blaster (Neutral Special Stance)
+Eggs no longer decay from spamming (However, they are still affected by stale moves), and the FAF from cancelling is now sooner
+When inputting a smash attack during this stance, you will now perform a (angled) side tilt. This also removes Smash Turnaround Cancels, and by extension, TAS Shot
+
+Advantages:
+- Can launch opponents away during stance
+- Egg confirms more lenient
+
+Disadvantages:
+- No more TAS Shot
+- Smash Turnaround Cancel -> Wonderwing also gone
+
+```diff
+Specs:
++ FAF from cancel: 12->10
+! FTilt Startup (From Stance): 7->9
+! FTilt FAF (From Stance): 31->27
+```
+
 ## Shock Spring Pad (Up Special)
 Falling hitbox size increased to more accurately reflect the model
 
@@ -66,10 +85,9 @@ Specs:
 - Invincibility removed
 - Hitbox size decreased
 - Self damage on landing (during certain frames)
-- Damage: 22/16 -> 16/10
-! Items can be ZDropped
+- Damage: 22/16 -> 16/10 (Grenegg->SideB)
 ! Armor on frames 1-4
-! Bounceback on shield
++ Items can be ZDropped during dash animation
 + No longer uses Gold Feathers
 + Airspeed: 4.5 -> 5.0
 + Trajectory control

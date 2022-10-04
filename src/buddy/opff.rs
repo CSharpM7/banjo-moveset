@@ -1,6 +1,9 @@
 use super::*;
 utils::import_noreturn!(common::opff::fighter_common_opff);
 
+
+static mut BAYONET_STATE: i32 = 0;
+
 // Use a different move while using SideB in the air
 unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){ 
     let isGuarding = fighter.is_button_on(Buttons::Guard);
@@ -81,6 +84,55 @@ unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut Battl
     PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot01"));
 }
 
+unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+    let status = StatusModule::status_kind(fighter.module_accessor);
+    if [
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_F,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_B
+    ].contains(&status) {
+        if (BAYONET_STATE==0)
+        {
+            let isCSticking = ControlModule::get_command_flag_cat(fighter.module_accessor, 0) & *FIGHTER_PAD_CMD_CAT1_FLAG_ATTACK_S4 != 0;
+
+            let transitionFrame = 2.0;
+            let canCancel = fighter.motion_frame() >= transitionFrame;
+            if (isCSticking && canCancel) {
+                println!("CStick");
+                fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
+                BAYONET_STATE=1;
+            }
+        }
+        else
+        {
+            println!("CHANGE PLEASE");
+            fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
+        }
+    }
+    else if (status == *FIGHTER_STATUS_KIND_ATTACK_S3 && BAYONET_STATE==1)
+    {
+        let transitionFrame = 21.0;
+        let canCancel = fighter.motion_frame() >= transitionFrame;
+        if (!canCancel) {return;}
+        println!("Return");
+        BAYONET_STATE=2;
+        fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START, true);
+    }
+    else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START && BAYONET_STATE==2)
+    {
+        BAYONET_STATE=0;
+        STOP_SE(fighter, Hash40::new("se_buddy_attackhard_s03"));
+        let transitionFrame = 26.0;
+        ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transitionFrame);
+        MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, transitionFrame, true, true, false);
+        println!("Transition");
+    }
+    else if AttackModule::is_infliction_status(boma,*COLLISION_KIND_MASK_HIT)
+    {
+        BAYONET_STATE=0;
+    }
+}
+
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
 fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
@@ -89,6 +141,19 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         let sideSpecial = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH);
         let InAir = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     
+        let isGuarding = fighter.is_button_on(Buttons::Guard);
+        if (isGuarding)
+        {
+            println!(
+                "[Fighter Hook]\nStart: {}\nShoot: {}\nWalkF: {}\nWalkB: {}\nEND: {}",
+                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START,
+                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
+                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_F,
+                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_B,
+                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END
+            );
+
+        }
         if (sideSpecial)
         {
             sidespecial_cancel(fighter);
@@ -97,6 +162,10 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
                 beakbomb_control(fighter,boma);
                 beakbomb_checkForHit(fighter,boma);
             }
+        }
+        else
+        {
+            breegull_bayonet(fighter,boma);
         }
     }
 }
