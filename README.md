@@ -4,6 +4,42 @@
 SUM fighter-code-edits channel: invaluable help
 HDR Dev Team: Opensource macros used to help make this possible
 
+## Uptilth
+A new uptilt with a Banjo hitbox, and a Kazooie hitbox
+
+Advantages:
+
+Disadvantages:
+
+```diff
+Specs:
++ FAF: 32 -> 30
+```
+
+## Upsmash
+Up smash is now Banjo's uptilt. 
+
+Advantages:
+- No longer a multihit
+- Stronger than the original upsmash
+- Has a launch hitbox at the bottom, hitting small characters and burried foes
+- Kills about 10% earlier than the original uptilt
+
+Disadvantages:
+- FAF is later, making this move less spammable
+- Less safe on shield
+
+```diff
+Specs (Changes based on original Uptilt):
+- Total Frames: +7
+- FAF: 32 -> 48
+- Shield Advantage: -10 -> -22
+! KBG: 110 -> 87
+! BKB: 42 -> 40
++ Damage: 10 -> 15/16
++ Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
+```
+
 ## Nair
 Banjo now has an extremely versatile nair! Banjo swings his backpack 360 degrees, hitting in front, behind and then in front again. The bag is the sweetspot, while Banjo's arms are the sourspot. The first hit is the strongest, comparable to a slightly weaker Samus nair. The back hit is noticeably weaker, but gets opponents off of you. For the final hit, the sweetspot pops opponents up which can lead into fair/upsmash, but is harder to land.
 
@@ -24,30 +60,6 @@ Specs:
 - Autocancellable on frames 1-6, 42+
 + Landing lag: 8
 - Final Frame: 54
-```
-
-## Upsmash
-Up smash is now Banjo's uptilt. The changes below are the differences between his original uptilt.
-
-Advantages:
-- No longer a multihit
-- Stronger than the original upsmash
-- Has a launch hitbox at the bottom, hitting small characters and burried foes
-- Kills about 10% earlier than the original uptilt
-
-Disadvantages:
-- FAF is later, making this move less spammable
-- Less safe on shield
-
-```diff
-Specs:
-- Total Frames: +7
-- FAF: 32 -> 48
-- Shield Advantage: -10 -> -22
-! KBG: 110 -> 87
-! BKB: 42 -> 40
-+ Damage: 10 -> 15/16
-+ Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
 ```
 
 ## Breegull Blaster (Neutral Special Stance)

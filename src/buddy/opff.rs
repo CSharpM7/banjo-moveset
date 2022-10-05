@@ -75,24 +75,32 @@ unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut Battle
 unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let IsGrounded = fighter.is_situation(*SITUATION_KIND_GROUND);
     let cancelFrame = 5.0;
-    let cancelCutoff = 20.0;
+    let cancelCutoff = 25.0;
     let canFail = cancelFrame < fighter.motion_frame() && fighter.motion_frame() < cancelCutoff;
-    if !(IsGrounded && canFail) {return;}
+    if !(IsGrounded) {return;}
 
-    DamageModule::add_damage(fighter.module_accessor, 10.0,0);
-    fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, false);
-    //fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
-    PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot01"));
+    if (canFail)
+    {
+        DamageModule::add_damage(fighter.module_accessor, 10.0,0);
+        fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, false);
+        PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot01"));
+    }
+    else
+    {
+        fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
+    }
+
 }
 
 unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let InAir = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     if (InAir)
     {
-        BAYONET_STATE=1;
+        BAYONET_STATE=0;
         return;
     }
 
+    println!("{}",BAYONET_STATE);
     let status = StatusModule::status_kind(fighter.module_accessor);
     if [
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
@@ -103,8 +111,8 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         {
             let isCSticking = ControlModule::get_command_flag_cat(fighter.module_accessor, 0) & *FIGHTER_PAD_CMD_CAT1_FLAG_ATTACK_S4 != 0;
 
-            let transitionFrame = 2.0;
-            let canCancel = fighter.motion_frame() >= transitionFrame;
+            let transitionFrame = 3.0;
+            let canCancel = fighter.motion_frame() <= transitionFrame;
             if (isCSticking && canCancel) {
                 println!("CStick");
                 fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
@@ -133,10 +141,12 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, transitionFrame, true, true, false);
     }
     //If Breegull was cancelled (in)voluntarily, revert state
+    /*
     else if [
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END,
         *FIGHTER_STATUS_KIND_DAMAGE
-    ].contains(&status)
+    ].contains(&status)*/
+    else
     {
         BAYONET_STATE=0;
     }
