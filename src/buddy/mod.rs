@@ -4,6 +4,7 @@ mod nair;
 mod upsmash;
 mod sidespecial;
 //mod nspecial;
+mod uptilt;
 mod opff;
 
 pub fn install() {
@@ -11,5 +12,6 @@ pub fn install() {
     upsmash::install();
     sidespecial::install();
     //nspecial::install();
+    uptilt::install();
     opff::install();
 }

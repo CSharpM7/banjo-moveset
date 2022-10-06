@@ -4,7 +4,7 @@
 SUM fighter-code-edits channel: invaluable help
 HDR Dev Team: Opensource macros used to help make this possible
 
-## Uptilth
+## Uptilt
 A new uptilt with a Banjo hitbox, and a Kazooie hitbox
 
 Advantages:
