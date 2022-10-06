@@ -201,15 +201,13 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         //Prevents losing a gold feather
         WorkModule::add_int(boma, 1, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN);
 
-        let shieldDamage = 1; //This should be 4 if Peach Bomber mechanic is implemented
+        let shieldDamage = 4; //This should be 4 if Peach Bomber mechanic is implemented
         //WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_SUPER_ARMOR);
         JostleModule::set_status( boma, false);
         ATTACK(fighter, 0, 0, Hash40::new("top"), 16.0, 43, 64, 0, 66, 4.2, 0.0, 9.2, 8.8, Some(0.0), Some(9.2), Some(11.4), 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
         ATTACK(fighter, 1, 0, Hash40::new("top"), 16.0, 43, 64, 0, 66, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
-        //ATK_SET_SHIELD_SETOFF_MUL_arg3(fighter, 0, 1, 0.48);
-        ATK_SET_SHIELD_SETOFF_MUL(fighter, 0, 0.5);
         damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 6.0);
         WorkModule::on_flag( boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_CLIFF_CHECK);
     }

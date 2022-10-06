@@ -3,6 +3,7 @@ utils::import_noreturn!(common::opff::fighter_common_opff);
 
 
 static mut BEAKBOMB_ACTIVE: bool = false;
+static mut BEAKBOMB_WEAK_BOUNCE: bool = false;
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BAYONET_STATE: i32 = 0;
 
@@ -89,7 +90,10 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     else if (!InAir && BEAKBOMB_ACTIVE)
     {
         BEAKBOMB_ACTIVE=false;
-        fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
+        if (sideSpecialWall)
+        {
+            fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
+        }
     }
     //If out of SideSpecial (Dash), then set BEAKBOMB_ACTIVE to false
     else if !(sideSpecial)
@@ -107,6 +111,8 @@ unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut Battle
         return;
     }
     let startFrame = 6.0;
+    let weakFrame = 20.0;
+    BEAKBOMB_WEAK_BOUNCE = fighter.motion_frame() >= weakFrame;
     fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL, false);
     MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, startFrame, true, true, false);
 }
@@ -118,8 +124,10 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 
         KineticModule::resume_energy(boma, *FIGHTER_KINETIC_ENERGY_ID_CONTROL);
             //WorkModule::off_flag(boma, *FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING);
+            let xBounce = if (BEAKBOMB_WEAK_BOUNCE) {-1.5} else {-2.5};
+            let yBounce = if (BEAKBOMB_WEAK_BOUNCE) {0.5} else {1.0};
             WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
-            SET_SPEED_EX(fighter, 1.625, 0.5, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+            SET_SPEED_EX(fighter, xBounce, yBounce, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
     }
 }
 
