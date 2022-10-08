@@ -3,7 +3,6 @@ use super::*;
 
 #[acmd_script( agent = "buddy_pad", script = "game_fall" , category = ACMD_GAME , low_priority)]
 unsafe fn buddy_pad_fall_game(fighter: &mut L2CAgentBase) {
-    println!("Pad!");
     let lua_state = fighter.lua_state_agent;    
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     let pad_length = 6.0; //7 perfectly fits the model, but we need to shave off just a small bit

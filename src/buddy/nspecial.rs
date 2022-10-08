@@ -4,7 +4,7 @@ use super::*;
 unsafe fn buddy_attack_special_n_upperfire_game(fighter: &mut L2CAgentBase) {
     println!("Upper");
     //Prevents egg decay
-    //WorkModule::set_int(fighter.module_accessor, 0, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+    WorkModule::set_int(fighter.module_accessor, 0, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
 }
 
 unsafe fn tilt_sound(fighter: &mut L2CAgentBase) {
@@ -61,8 +61,8 @@ unsafe fn buddy_attack_tilt_lw_sound(fighter: &mut L2CAgentBase) {
 pub fn install() {
     install_acmd_scripts!(
         buddy_attack_special_n_upperfire_game,
-        buddy_attack_tilt_sound,
-        buddy_attack_tilt_hi_sound,
-        buddy_attack_tilt_lw_sound
+        //buddy_attack_tilt_sound,
+        //buddy_attack_tilt_hi_sound,
+        //buddy_attack_tilt_lw_sound
     );
 }
