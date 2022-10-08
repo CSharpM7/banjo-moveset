@@ -61,6 +61,14 @@ unsafe fn buddy_special_air_s_dash_effect(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
 
+    if is_excute(fighter) {
+        EFFECT(fighter, Hash40::new("buddy_special_s_flash1"), Hash40::new("top"), 0, 15, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false);
+        LAST_EFFECT_SET_COLOR(fighter, 1, 0.3, 0);
+        
+        EFFECT_FLW_POS(fighter, Hash40::new("buddy_special_s_flash2"), Hash40::new("k_head"), -1, 0, -4, 0, 0, 0, 0.5, true);
+        EffectModule::enable_sync_init_pos_last(boma);
+    }
+
     if (smash::app::sv_animcmd::get_value_float(lua_state,*SO_VAR_FLOAT_LR)<=0.0){
         if is_excute(fighter) {
             //EFFECT_FOLLOW(fighter, Hash40::new("buddy_special_s_impact"), Hash40::new("throw"), 2, 0, 3, 0, 0, 0, 1, true);
@@ -75,14 +83,19 @@ unsafe fn buddy_special_air_s_dash_effect(fighter: &mut L2CAgentBase) {
         EffectModule::enable_sync_init_pos_last(boma);
     }
     if is_excute(fighter) {
+        FLASH(fighter, 1, 1, 0.6, 0.3);
         EFFECT(fighter, Hash40::new("sys_atk_smoke"), Hash40::new("top"), -5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false);
         LANDING_EFFECT(fighter, Hash40::new("null"), Hash40::new("top"), 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, false);
-        }
+    }
     frame(lua_state, 3.0);
     if is_excute(fighter) {
         EffectModule::enable_sync_init_pos_last(boma);
         LANDING_EFFECT(fighter, Hash40::new("sys_dash_smoke"), Hash40::new("top"), -2, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, false);
-        }
+    }
+    frame(lua_state, 6.0);
+    if is_excute(fighter) {
+        COL_NORMAL(fighter);
+    }
 }
 
 #[acmd_script( agent = "buddy", script = "sound_specialairsstart", category = ACMD_SOUND )]
@@ -145,13 +158,16 @@ unsafe fn buddy_special_air_s_wall_sound(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
     
-    frame(lua_state, 1.0);
-    if is_excute(fighter) {
-        PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot02"));
-    }
     frame(lua_state, 2.0);
     if is_excute(fighter) {
         PLAY_SE(fighter, Hash40::new("se_common_down_m_01"));
+    }
+    frame(lua_state, 6.0);
+    if is_excute(fighter) {
+        let play_vc = app::sv_math::rand(hash40("fighter"), 2);
+        if play_vc == 0 {
+            PLAY_SE(fighter, Hash40::new("vc_buddy_missfoot02"));
+        }
     }
     frame(lua_state, 14.0);
     if is_excute(fighter) {
@@ -201,7 +217,7 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         //Prevents losing a gold feather
         WorkModule::add_int(boma, 1, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN);
 
-        let shieldDamage = 4; //This should be 4 if Peach Bomber mechanic is implemented
+        let shieldDamage = 2;
         //WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_SUPER_ARMOR);
         JostleModule::set_status( boma, false);
         ATTACK(fighter, 0, 0, Hash40::new("top"), 16.0, 43, 64, 0, 66, 4.2, 0.0, 9.2, 8.8, Some(0.0), Some(9.2), Some(11.4), 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
@@ -210,6 +226,8 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         
         damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 6.0);
         WorkModule::on_flag( boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_CLIFF_CHECK);
+
+        ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.5);
     }
     //Remove transition hurtbox
     wait(lua_state, 1.0);
@@ -225,8 +243,7 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
     frame(lua_state, 18.0);
     if is_excute(fighter) {
         ATTACK(fighter, 0, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 4.2, 0.0, 9.2, 8.8, Some(0.0), Some(9.2), Some(11.4), 1.0, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
-
-        ATK_SET_SHIELD_SETOFF_MUL_arg3(fighter, 0, 1, 0.28);
+        ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.25);
     }
 }
 

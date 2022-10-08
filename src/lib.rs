@@ -3,6 +3,7 @@
 
 pub mod buddy;
 pub mod buddy_pad;
+pub static mut FIGHTER_CUTIN_MANAGER_ADDR: usize = 0;
 
 use smash::{
     lib::{
@@ -41,4 +42,7 @@ pub fn main() {
     println!("[smashline_buddy::main] GUH-HUH!");
     buddy::install();
     buddy_pad::install();
+    unsafe{
+	skyline::nn::ro::LookupSymbol(&mut FIGHTER_CUTIN_MANAGER_ADDR, c_str!("_ZN3lib9SingletonIN3app19FighterCutInManagerEE9instance_E"));
+    }
 }

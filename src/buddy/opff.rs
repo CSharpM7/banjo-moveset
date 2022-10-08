@@ -3,7 +3,7 @@ utils::import_noreturn!(common::opff::fighter_common_opff);
 
 
 static mut BEAKBOMB_ACTIVE: bool = false;
-static mut BEAKBOMB_WEAK_BOUNCE: bool = false;
+static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BAYONET_STATE: i32 = 0;
 
@@ -28,10 +28,44 @@ unsafe fn wonderwing_cancel(fighter: &mut L2CFighterCommon){
          fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, true);
     }
 }
+//cancelFrame should be less than whatever frame a ShieldBonk starts on
+unsafe fn sidespecial_passive(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){ 
+    let sideSpecialWall = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL);
+    if (!sideSpecialWall) {return;}
+    let hasHitShield = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
+    if (hasHitShield) {return;}
+    let isTeching = ControlModule::check_button_trigger(boma,*CONTROL_PAD_BUTTON_GUARD);//fighter.is_button_on(Buttons::Guard);
+    let cancelFrame = 5.0;
+    let canCancel = fighter.motion_frame() <= cancelFrame;
+    if (isTeching && canCancel)
+    {
+        //Clear speed
+        KineticModule::change_kinetic(fighter.module_accessor, *FIGHTER_KINETIC_TYPE_AIR_STOP); 
+        sv_kinetic_energy!(
+            clear_speed,
+            fighter,
+            FIGHTER_KINETIC_ENERGY_ID_STOP
+        );
+        sv_kinetic_energy!(
+            clear_speed,
+            fighter,
+            FIGHTER_KINETIC_ENERGY_ID_GRAVITY
+        );
+        //Tech based on y stick
+        let stick_y: f32 = ControlModule::get_stick_y(boma);
+        //Wall faces you the wrong way
+        let passiveStatus = if (stick_y>0.75) {*FIGHTER_STATUS_KIND_WALL_JUMP} else {*FIGHTER_STATUS_KIND_PASSIVE_WALL};
+        fighter.change_status_req(passiveStatus, true);
+        //PostureModule::reverse_rot_y_lr(boma);
+        REVERSE_LR(fighter);
+        println!("{}",stick_y);
+    }
+}
 
-unsafe fn sidespecial_cancel(fighter: &mut L2CFighterCommon){
+unsafe fn sidespecial_cancel(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let sideSpecial = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH);
     if !sideSpecial {return;}
+
     let inAir = fighter.is_situation(*SITUATION_KIND_AIR);
     if (!inAir)
     {
@@ -43,6 +77,7 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     if (!BEAKBOMB_ACTIVE)
     {
         BEAKBOMB_ACTIVE=true;
+        BEAKBOMB_BOUNCE=0;
         let stick_y: f32 = ControlModule::get_stick_y(boma);
         BEAKBOMB_ANGLE = stick_y.signum();
         if (stick_y.abs())<0.1
@@ -50,8 +85,9 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
             BEAKBOMB_ANGLE = 0.0;
         }
     }
-    //Do not update flight during hitstun
-    if AttackModule::is_infliction_status(boma,*COLLISION_KIND_MASK_HIT) {return;}
+    //Do not update flight during hitstop
+    let in_Hitstop = SlowModule::frame(fighter.module_accessor, *FIGHTER_SLOW_KIND_HIT) > 0 ;
+    if in_Hitstop {return;}
 
     //Movement
     let motion_factor = 0.375;
@@ -105,14 +141,14 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
 
 unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let hasHitFoe = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_HIT);
-    let hasHitSheild = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
-    if !(hasHitSheild || hasHitFoe) {
+    let hasHitShield = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
+    if !(hasHitShield || hasHitFoe) {
         beakbomb_checkForFail(fighter,boma);
         return;
     }
     let startFrame = 6.0;
     let weakFrame = 20.0;
-    BEAKBOMB_WEAK_BOUNCE = fighter.motion_frame() >= weakFrame;
+    BEAKBOMB_BOUNCE = if (fighter.motion_frame() >= weakFrame) {1} else {2};
     fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL, false);
     MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, startFrame, true, true, false);
 }
@@ -124,8 +160,12 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 
         KineticModule::resume_energy(boma, *FIGHTER_KINETIC_ENERGY_ID_CONTROL);
             //WorkModule::off_flag(boma, *FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING);
-            let xBounce = if (BEAKBOMB_WEAK_BOUNCE) {-1.5} else {-2.5};
-            let yBounce = if (BEAKBOMB_WEAK_BOUNCE) {0.5} else {1.0};
+            let xBounce = match BEAKBOMB_BOUNCE{
+                0=> -1.5,
+                2=> -2.5,
+                _=> -2.0
+            };
+            let yBounce = if (BEAKBOMB_BOUNCE<1) {0.5} else {1.0};
             WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
             SET_SPEED_EX(fighter, xBounce, yBounce, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
     }
@@ -217,6 +257,7 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         let lua_state = fighter.lua_state_agent;    
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     
+        /*
         let isGuarding = fighter.is_button_on(Buttons::Guard);
         if (isGuarding)
         {
@@ -230,7 +271,9 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
             );
 
         }
-        sidespecial_cancel(fighter);
+        */
+        sidespecial_cancel(fighter,boma);
+        sidespecial_passive(fighter,boma);
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
     }

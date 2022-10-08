@@ -5,6 +5,7 @@ mod upsmash;
 mod sidespecial;
 //mod nspecial;
 mod uptilt;
+mod upthrow;
 mod opff;
 
 pub fn install() {
@@ -13,5 +14,6 @@ pub fn install() {
     sidespecial::install();
     //nspecial::install();
     uptilt::install();
+    upthrow::install();
     opff::install();
 }
