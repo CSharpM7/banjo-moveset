@@ -107,7 +107,7 @@ Specs:
 ```
 
 ## Breegull Blaster (Neutral Special Stance)
-Eggs no longer decay from spamming (However, they are still affected by stale moves), and the FAF from cancelling is now sooner
+Eggs no longer decay from spamming (they still deal less damage than Megaman pellets), and the FAF from cancelling is now sooner.
 When inputting a smash attack during this stance, you will now perform a (angled) side tilt. This also removes Smash Turnaround Cancels, and by extension, TAS Shot
 
 Advantages:
@@ -158,10 +158,13 @@ Specs:
 
 # Summary
 
-With these specific changes, Banjo becomes much less of a linear character, especially when trying to seal a stock. His gameplan can now revolve around properly trapping opponents into uncomfortable situations, and pushing them offstage where his arsenal of tricks can gimp them, or deny them of returning to the stage. His lackluster ability to juggle opponents has been slightly remedied, but catching landing opponents still proves difficult. His more infamous tools have been greatly toned down, which should help playing against Banjo become a little more enjoyable.
+With these specific changes, Banjo becomes much less of a linear character, especially when trying to seal a stock. His gameplan can now revolve around properly trapping opponents into uncomfortable situations, and pushing them offstage where his arsenal of tricks can gimp them, or deny them of returning to the stage. His lackluster ability to juggle opponents has been slightly remedied, but catching landing opponents still proves difficult. His more infamous tools have been greatly toned down, which should help playing against Banjo become a little more enjoyable. 
 
 ## Buffs
 His new nair helps push opponents further back, potentially leading them offstage where Banjo shines best. If your spacing is on point, you can also confirm a kill of the second sweetspot of nair, similar to Marth/Lucina/Chrom/Roy, but much more telegraphed. His original uptilt moves to a smash attack which now packs some serious damage on grounded foes. His new uptilt, while extremely unorthodox, serves several different purposes. His changed throws help him juggle opponents easier, or send them out of range if you need some space.
 
 ## Nerfs
 His new aerial side B might be more versatile as a recovery move, but it lacks any invincibility which allows opponents to spike and edgeguard him without fear. Opponents can also land on the stage without the fear of buffering an airdodge/attack right into an invincible kill move. The Beak Bayonet (Neutral B Stance Smash Attack) has the unique function of removing TAS Shot and Smash Turnaround Cancels (which could true combo into wonderwing). Forward Throw is slightly less cheeky, as it no longer forces low percent combos and tech chases. His new uptilt, as useful as it is, is less safe on shield and doesn't kill as early, while the new upsmash is less safe on shield and slightly slower than it's original incarnation.
+
+## Competitive Placement
+Without having to struggle to take a stock or deal damage, Banjo escapes the realm of bottom tiers. However, these changes, as well as not touching up his anti-air game, prevent him from dominating a meta where this was the Banjo we got. Fast paced characters like Fox and Sheik will still shut him down, and characters that mitigate his juggling like Wario and Yoshi will still prove challenging. Though now, he has the tools to stand against bad matchups, and possibly sit comfortably as a mid or high tier.

@@ -258,6 +258,9 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     
         /*
+        //Prevents egg decay
+        WorkModule::set_int(fighter.module_accessor, 1, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+        
         let isGuarding = fighter.is_button_on(Buttons::Guard);
         if (isGuarding)
         {

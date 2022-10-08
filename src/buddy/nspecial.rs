@@ -2,9 +2,18 @@ use super::*;
 
 #[acmd_script( agent = "buddy", script = "game_specialnupperfire" , category = ACMD_GAME , low_priority)]
 unsafe fn buddy_attack_special_n_upperfire_game(fighter: &mut L2CAgentBase) {
-    println!("Upper");
+    let lua_state = fighter.lua_state_agent;
+    let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     //Prevents egg decay
     WorkModule::set_int(fighter.module_accessor, 0, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+    frame(lua_state, 4.0);
+    if is_excute(fighter) {
+        WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_N_FLAG_GENERATE_BULLET);
+    }
+    frame(lua_state, 5.0);
+    if is_excute(fighter) {
+        WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_N_FLAG_START_PRECEDE_CHECK);
+    }
 }
 
 unsafe fn tilt_sound(fighter: &mut L2CAgentBase) {
