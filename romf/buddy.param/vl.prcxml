@@ -158,6 +158,8 @@
       <float hash="dash_end_speed_x_mul_air">1.3</float>
       <float hash="dash_end_accel_x_air">0.05</float>
       <float hash="dash_end_gravity_mul">0.9</float>
+	  
+      <float hash="hud_offset_y">-2000</float>
     </struct>
     <hash40 index="1">dummy</hash40>
     <hash40 index="2">dummy</hash40>

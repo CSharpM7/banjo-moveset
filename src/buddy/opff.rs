@@ -6,6 +6,7 @@ static mut BEAKBOMB_ACTIVE: bool = false;
 static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BAYONET_STATE: i32 = 0;
+static mut WONDERWING_GIVE: bool = true;
 
 // Use a different move while using SideB in the air
 unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){ 
@@ -251,34 +252,51 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     }
 }
 
+unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+    let status = StatusModule::status_kind(fighter.module_accessor);
+    let sideSpecial = [
+        *FIGHTER_STATUS_KIND_SPECIAL_S,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL
+    ].contains(&status);
+    if (!sideSpecial)
+    {
+        EffectModule::kill_kind(boma, Hash40::new("buddy_special_s_count"), false, true);
+    }
+}
+
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
 fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
         let lua_state = fighter.lua_state_agent;    
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
     
-        /*
-        //Prevents egg decay
-        WorkModule::set_int(fighter.module_accessor, 1, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
-        
-        let isGuarding = fighter.is_button_on(Buttons::Guard);
-        if (isGuarding)
-        {
-            println!(
-                "[Fighter Hook]\nStart: {}\nShoot: {}\nWalkF: {}\nWalkB: {}\nEND: {}",
-                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START,
-                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
-                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_F,
-                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_B,
-                *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END
-            );
-
-        }
-        */
         sidespecial_cancel(fighter,boma);
         sidespecial_passive(fighter,boma);
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
+        buddy_meter_display(fighter,boma);
+		if (WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN)<=1){
+			let IsGrounded = fighter.is_situation(*SITUATION_KIND_GROUND);
+			if (IsGrounded){
+				WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+			}
+			else
+			{
+				WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+			}
+		}
+		WorkModule::set_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN,10);
+		if fighter.is_status(*FIGHTER_STATUS_KIND_DEAD)
+		{
+			WONDERWING_GIVE=true;
+		}
+		else if (WONDERWING_GIVE && WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN)==4)
+		{
+			WorkModule::add_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN,1);
+			WONDERWING_GIVE=false;
+		}
     }
 }
 

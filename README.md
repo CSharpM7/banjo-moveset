@@ -151,6 +151,7 @@ Specs:
 + Items can be ZDropped during dash animation
 + No longer uses Gold Feathers
 + Airspeed: 4.5 -> 5.0
++ Shield Damage: 0->4
 + Trajectory control (on startup)
 + Landing hitbox (Active for 2 frames on fail)
 + Can tech walls
