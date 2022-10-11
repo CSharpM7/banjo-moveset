@@ -183,7 +183,7 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
             WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
             SET_SPEED_EX(fighter, x_bounce, y_bounce, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
 			if (BEAKBOMB_BOUNCE==0){
-				FT_MOTION_RATE(fighter, 0.5);
+				FT_MOTION_RATE(fighter, 2.0);
 			}
     }
 	else if (fighter.motion_frame() > 40.0 && BEAKBOMB_BOUNCE==0)

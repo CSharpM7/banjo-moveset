@@ -100,6 +100,10 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         COL_NORMAL(fighter);
     }
+    frame(lua_state, 16.0);
+    if is_excute(fighter) {
+        FLASH(fighter, 1, 0.4, 0, 0.3);
+    }
 }
 
 #[acmd_script( agent = "buddy", script = "effect_specialsdash", category = ACMD_EFFECT )]
@@ -291,7 +295,6 @@ unsafe fn buddy_special_air_s_end_game(fighter: &mut L2CAgentBase) {
 unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;    
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
-    FT_MOTION_RATE(fighter, 1.1);
 
     if is_excute(fighter) {
         sv_kinetic_energy!(
@@ -305,6 +308,20 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
             0.0
         );
+    }
+    frame(lua_state, 13.0);
+    FT_MOTION_RATE(fighter, 2.0);
+    frame(lua_state, 15.0);
+    FT_MOTION_RATE(fighter, 1.0);
+
+    //6 frames of armor
+    frame(lua_state, 19.0);
+    if is_excute(fighter) {
+        damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 7.0);
+    }
+    wait(lua_state, 6.0);
+    if is_excute(fighter) {
+        damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_NORMAL, 0.0);
     }
 }
 
@@ -325,7 +342,6 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         
         ATTACK(fighter, 1, 0, Hash40::new("top"), 16.0, 43, 70, 0, 66, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
-        damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 6.0);
         WorkModule::on_flag( boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_CLIFF_CHECK);
 
         ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.5);
@@ -334,11 +350,6 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
     wait(lua_state, 1.0);
     if is_excute(fighter) {
         AttackModule::clear(fighter.module_accessor, 1, false);
-    }
-    //6 frames of armor
-    frame(lua_state, 6.0);
-    if is_excute(fighter) {
-        damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_NORMAL, 0.0);
     }
     //Weaker hitbox
     frame(lua_state, 18.0);

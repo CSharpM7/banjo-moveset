@@ -33,7 +33,7 @@ Specs:
 ```
 
 ## Upsmash
-Up smash is now Banjo's uptilt. It has been slightly nerfed as well, but the main reason is because most of your kit (nair second sweetspot,sometimes uptilt and upthrow, landing upair, breegull blaster) can combo into it, as well as being able to charge it to bait out an airdodge.
+Up smash is now Banjo's uptilt. It has been slightly nerfed as well, but the main reason is because most of your kit (nair second sweetspot,sometimes uptilt and upthrow, landing upair, breegull blaster) can combo into it, as well as having a low profile charge.
 
 Advantages:
 - No longer a multihits
@@ -49,13 +49,14 @@ Disadvantages:
 Specs (Changes based on original Uptilt):
 - Total Frames: +7
 - FAF: 32 -> 48
-- Startup: 11->13
 - Active Frames: 4->3
 - Shield Advantage: -10 -> -21
+! Startup: 11->13 (10 for bottom launch hitbox)
 ! KBG: 110 -> 90
 ! BKB: 42 -> 70
-+ Damage: 10 -> 2,13
-+ Launch hitbox added. Active in front of Banjo during frames 10-12. Attempts to launch opponents into the main hitbox
+! Charge on Frame 7
++ Damage: 10 -> 4/13
++ Launch hitbox added. Active in front of Banjo during frames 13-14. Attempts to launch opponents into the main hitbox
 ```
 
 ## Nair
@@ -87,6 +88,9 @@ Upair gets a much needed damage buff, and becomes easier to combo into itself
 Specs:
 + FAF: 34->29
 + Damage: 5.8->7.8
++ Autocancel: 30->26
+! KBG: 80->100
+! BKG: 42->37
 ```
 ## Fthrow
 FThrow is now a much better "get off me" throw, as opponents now get sent further away. Tech chasing with wonderwing at low percents has also been removed, as well as the other low percent combos.
@@ -110,7 +114,7 @@ Specs:
 
 ## Breegull Blaster (Neutral Special Stance)
 Eggs no longer decay from spamming (they still deal less damage than Megaman pellets), and the FAF from cancelling is now sooner.
-When inputting a smash attack during this stance, you will now perform a (angled) side tilt. This also removes Smash Turnaround Cancels, and by extension, TAS Shot
+When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes Smash Turnaround Cancels, and by extension, TAS Shot
 
 Advantages:
 - Can launch opponents away during stance
@@ -132,12 +136,12 @@ Specs:
 Falling hitbox size increased to more accurately reflect the model
 
 ## Wonderwing (Side Special Ground)
-After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward, making the move slightly safer on whiff. Guard-canceling will deactivate the hitbox.
+After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward. Guard-canceling will deactivate the hitbox.
 
 ## Beakbomb (Side Special Air)
 A new aerial side special that acts like an overall nerf to wonderwing, but also helps Banjo! This move has no invisibility and a smaller hitbox. It deals less damage, so grenegg into sideB doesn't really kill until higher percents. The move also has brief 7% armor on startup, and will send Banjo further and costs no gold feathers to use. Do note that this move has a 3 second cooldown on completion. 
 
-You can also chose which angle to fly in by holding up or down on the control stick before taking off! Take care while flying, as landing on the ground too early will deal 10% damage and put you into the fail animation. Hitting sheilds is ill-advised, as you will recoil (akin to Flare Blitz). If you find yourself about to hit a wall, you can press the shield button within the first 4 frames of hitting a wall to perform a tech! Holding up lets you perform a walljump tech.
+You can also choose which angle to fly in by holding up or down on the control stick before taking off! Take care while flying, as landing on the ground too early will deal 10% damage and put you into the fail animation. Hitting sheilds is ill-advised, as you will recoil (akin to Flare Blitz). If you find yourself about to hit a wall, you can press the shield button within the first 4 frames of hitting a wall to perform a tech! Holding up lets you perform a walljump tech.
 
 This move can also be guard-canceled like wonderwing, in case you accidentally b-reverse it and are headed towards the blastzone. Also, just because it's pretty cool, you can now Zdrop items while in the dash animation, transforming Kazooie into the Beak Bomber!
 
@@ -151,7 +155,7 @@ Specs:
 - Damage: 22/16 -> 16/10
 - Recoil on shield
 - 3 second cooldown
-! 7% Armor on frames 1-4
+! 7% Armor on frames 16-22
 ! KBG: 64->70
 + Items can be ZDropped during dash animation
 + No longer uses Gold Feathers
