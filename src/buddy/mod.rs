@@ -21,5 +21,5 @@ pub fn install() {
     fthrow::install();
     upair::install();
     opff::install();
-    //status::install();
+    status::install();
 }

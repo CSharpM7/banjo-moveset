@@ -31,14 +31,14 @@ use smash_script::{
     *,
     macros::*
 };
-use smashline::*;
-
 use utils::{
     *,
     util::*,
     ext::*,
     consts::*,
 };
+use smashline::*;
+
 
 #[skyline::main(name = "smashline_banjo")]
 pub fn main() {
