@@ -92,7 +92,7 @@ unsafe fn buddy_meter(fighter: &mut L2CAgentBase, boma: &mut BattleObjectModuleA
 unsafe fn buddy_special_s_start_effect(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
-    buddy_meter(fighter,boma);
+    //buddy_meter(fighter,boma);
 
 	
 	if (WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN)<=1){
@@ -187,7 +187,7 @@ unsafe fn buddy_special_s_dash_effect(fighter: &mut L2CAgentBase) {
     }
     frame(lua_state, 3.0);
     if is_excute(fighter) {
-        buddy_meter(fighter,boma);
+        //buddy_meter(fighter,boma);
 
 
         EFFECT_FOLLOW(fighter, Hash40::new("buddy_special_s_after_image"), Hash40::new("top"), 0, 0, 0, 0, 0, 0, 1, true);
@@ -422,16 +422,16 @@ unsafe fn buddy_special_air_s_wall_game(fighter: &mut L2CAgentBase) {
 
 
 // Uses smash_script, if you prefer to use the built-in macros instead.
-#[acmd_script( agent = "buddy", script = "game_specialairsfail" , category = ACMD_GAME , low_priority)]
-unsafe fn buddy_special_air_s_fail_game(fighter: &mut L2CAgentBase) {
+#[acmd_script( agent = "buddy", script = "game_specialsfail" , category = ACMD_GAME , low_priority)]
+unsafe fn buddy_special_s_fail_game(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent;    
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
     
-    //A landing hitbox that lasts 4 frames
+    //A landing hitbox that lasts 2 frames
     if is_excute(fighter) {
         ATTACK(fighter, 0, 0, Hash40::new("top"), 16.0, 43, 57, 0, 66, 6.2, 0.0, 9.2, 5.0, None,None,None, 1.15, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
     }
-    wait(lua_state, 4.0);
+    wait(lua_state, 2.0);
     if is_excute(fighter) {
         AttackModule::clear_all(fighter.module_accessor);
     }
@@ -452,8 +452,8 @@ pub fn install() {
         buddy_special_air_s_dash_sound,
         buddy_special_air_s_wall_game,
         buddy_special_air_s_wall_sound,
-        buddy_special_air_s_fail_game,
         
+        buddy_special_s_fail_game,
         buddy_special_s_start_effect,
         buddy_special_s_dash_effect
     );
