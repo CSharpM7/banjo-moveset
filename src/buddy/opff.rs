@@ -3,7 +3,7 @@ utils::import_noreturn!(common::opff::fighter_common_opff);
 
 
 static mut BEAKBOMB_ACTIVE: bool = false;
-static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength
+static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BAYONET_STATE: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
@@ -260,45 +260,10 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transitionFrame);
         MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, transitionFrame, true, true, false);
     }
-    //If Breegull was cancelled (in)voluntarily, revert state
-    /*
-    else if [
-        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END,
-        *FIGHTER_STATUS_KIND_DAMAGE
-    ].contains(&status)*/
     else
     {
         BAYONET_STATE=0;
     }
-}
-unsafe fn buddy_meter(fighter: &mut L2CAgentBase, boma: &mut BattleObjectModuleAccessor){
-	//smash::app::sv_system::EFFECT_WORK()
-	
-    /*let total_levels = WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN);
-    for x in 0..total_levels {
-        let position = Vector3f::new(
-            -15.0 + 5.0 * (x % 5 + 1) as f32,
-            22.0 + 5.0 * (x / 5) as f32,
-            -15.0 + 5.0 * (x % 5 + 1) as f32,
-        );*/
-		//EffectModule::set_alpha_last(boma, 0.0);
-		//EffectModule::set_billboard(boma, 1, true);
-		//50,50 shows everything. Same with 0,4. 0.4 only shows 2 of 5 wings.
-		// 1/feathers makes 5 show 1, but 0 show 4. 5 shows 0. 1/5-feathers isn't quite it.
-		// 1 = full. 0 = none. So .2*feathercount?
-		//EffectModule::set_offset_to_next(boma, 50);
-        /*
-        if total_levels - new_levels.abs() - 1 >= x {
-            continue;
-            */
-    //}
-    /*
-    if is_loss {
-        EffectModule::set_alpha_last(boma, 0.15);
-        EffectModule::set_scale_last(boma, &Vector3f::new(0.25, 0.25, 0.25));
-    } else {*/
-        //EffectModule::set_scale_last(boma, &Vector3f::new(0.4, 0.4, 0.4));
-    //}
 }
 
 unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool) {
@@ -331,7 +296,6 @@ unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut 
 		EffectModule::set_rgb(boma,handle, 1.0, 0.3, 0.0);
 	}
 	EffectModule::set_custom_uv_offset(boma, handle, &Vector2f::new(uvOffset_X,uvOffset_Y), 0);
-	//println!("!!!");
 }
 
 unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool){
@@ -440,18 +404,6 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
-		/*
-		if (WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN)<=1){
-			let IsGrounded = fighter.is_situation(*SITUATION_KIND_GROUND);
-			if (IsGrounded){
-				WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
-			}
-			else
-			{
-				WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
-			}
-		}
-		*/
     }
 }
 
