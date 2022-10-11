@@ -36,64 +36,10 @@ unsafe fn buddy_special_air_s_dash_expression(fighter: &mut L2CAgentBase) {
     wait(lua_state, 2.0);
 }
 
-
-unsafe fn buddy_meter(fighter: &mut L2CAgentBase, boma: &mut BattleObjectModuleAccessor){
-    EffectModule::kill_kind(boma, Hash40::new("buddy_special_s_count"), false, true);
-	//smash::app::sv_system::EFFECT_WORK()
-	
-    /*let total_levels = WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN);
-    for x in 0..total_levels {
-        let position = Vector3f::new(
-            -15.0 + 5.0 * (x % 5 + 1) as f32,
-            22.0 + 5.0 * (x / 5) as f32,
-            -15.0 + 5.0 * (x % 5 + 1) as f32,
-        );*/
-		let position = Vector3f::new(0.0,20.0,0.0);
-        let handle = EffectModule::req_follow(
-            boma,
-            Hash40::new("buddy_special_s_count"),
-            Hash40::new("top"),
-            &position,
-            &Vector3f::zero(),
-            1.0,
-            false,
-            0,
-            0,
-            0,
-            2,
-            0,
-            false,
-            false,
-        ) as u32;
-		//EffectModule::set_alpha_last(boma, 0.0);
-		//EffectModule::set_billboard(boma, 1, true);
-		//50,50 shows everything. Same with 0,4. 0.4 only shows 2 of 5 wings.
-		// 1/feathers makes 5 show 1, but 0 show 4. 5 shows 0. 1/5-feathers isn't quite it.
-		// 1 = full. 0 = none. So .2*feathercount?
-		let uvOffset = (0.2*WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN) as f32);
-		EffectModule::set_custom_uv_offset(boma, handle, &Vector2f::new(0.0,uvOffset), 2);
-		//EffectModule::set_offset_to_next(boma, 50);
-        /*
-        if total_levels - new_levels.abs() - 1 >= x {
-            continue;
-            */
-    //}
-    EffectModule::remove_time(boma, Hash40::new("buddy_special_s_flash1"));
-    /*
-    if is_loss {
-        EffectModule::set_alpha_last(boma, 0.15);
-        EffectModule::set_scale_last(boma, &Vector3f::new(0.25, 0.25, 0.25));
-    } else {*/
-        //EffectModule::set_scale_last(boma, &Vector3f::new(0.4, 0.4, 0.4));
-    //}
-}
-
 #[acmd_script( agent = "buddy", script = "effect_specialsstart", category = ACMD_EFFECT )]
 unsafe fn buddy_special_s_start_effect(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
-    //buddy_meter(fighter,boma);
-
 	
 	if (WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN)<=1){
 		return;
@@ -141,8 +87,6 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     let lua_state = fighter.lua_state_agent; 
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
 
-    //buddy_meter(fighter,boma);
-    //WorkModule::is_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
     frame(lua_state, 3.0);
     if is_excute(fighter) {
         FLASH(fighter, 1, 0.4, 0, 0.2);
@@ -187,9 +131,6 @@ unsafe fn buddy_special_s_dash_effect(fighter: &mut L2CAgentBase) {
     }
     frame(lua_state, 3.0);
     if is_excute(fighter) {
-        //buddy_meter(fighter,boma);
-
-
         EFFECT_FOLLOW(fighter, Hash40::new("buddy_special_s_after_image"), Hash40::new("top"), 0, 0, 0, 0, 0, 0, 1, true);
         EffectModule::enable_sync_init_pos_last(boma);
         LANDING_EFFECT(fighter, Hash40::new("sys_dash_smoke"), Hash40::new("top"), -2, 0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0, 0, 0, false);

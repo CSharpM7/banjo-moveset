@@ -1,5 +1,8 @@
 #![feature(concat_idents)]
 #![feature(proc_macro_hygiene)]
+#![allow(non_snake_case)]
+#![deny(deprecated)]
+#![allow(unused)]
 
 pub mod buddy;
 pub mod buddy_pad;

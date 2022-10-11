@@ -9,6 +9,7 @@ mod upthrow;
 mod fthrow;
 mod upair;
 mod opff;
+mod status;
 
 pub fn install() {
     nair::install();
@@ -20,4 +21,5 @@ pub fn install() {
     fthrow::install();
     upair::install();
     opff::install();
+    //status::install();
 }
