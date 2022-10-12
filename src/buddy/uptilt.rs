@@ -41,6 +41,12 @@ unsafe fn buddy_attack_tilt_hi_game(fighter: &mut L2CAgentBase) {
 
     let bkb_k = 57;
     let kbg_k = 78;
+
+    frame(lua_state, 3.0);
+    {
+        HIT_NODE(fighter, Hash40::new("shoulderr"), *HIT_STATUS_XLU);
+        HIT_NODE(fighter, Hash40::new("armr"), *HIT_STATUS_XLU);
+    }
     frame(lua_state, 6.0);
     if is_excute(fighter) {
         //Banjo//
@@ -51,12 +57,6 @@ unsafe fn buddy_attack_tilt_hi_game(fighter: &mut L2CAgentBase) {
         AttackModule::set_add_reaction_frame_revised(boma, 2, 1.0, false);
         ATK_SET_SHIELD_SETOFF_MUL_arg3(fighter, 0, 1, 0.5);
     }
-    /*
-    frame(lua_state, 9.0);
-    if is_excute(fighter) {
-        //0.0, -3.0, -3.0
-    }
-    */
     frame(lua_state, 10.0);
     if is_excute(fighter) {
         //Banjo//
@@ -69,7 +69,8 @@ unsafe fn buddy_attack_tilt_hi_game(fighter: &mut L2CAgentBase) {
     frame(lua_state, 12.0);
     if is_excute(fighter) {
         AttackModule::clear_all(boma);
-
+        HIT_NODE(fighter, Hash40::new("shoulderr"), *HIT_STATUS_NORMAL);
+        HIT_NODE(fighter, Hash40::new("armr"), *HIT_STATUS_NORMAL);
     }
 }
 

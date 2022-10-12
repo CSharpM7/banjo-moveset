@@ -91,7 +91,7 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         FLASH(fighter, 1, 0.4, 0, 0.2);
     }
-    frame(lua_state, 6.0);
+    frame(lua_state, 4.0);
     if is_excute(fighter) {
         FLASH_FRM(fighter, 4, 0, 0, 0, 0);
         EFFECT_FOLLOW_WORK(fighter, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_EFFECT_KIND_FLYING, Hash40::new("k_all"), 0, -6, 0, 0, 0, 0, 1, true);
@@ -100,7 +100,7 @@ unsafe fn buddy_special_air_s_start_effect(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         COL_NORMAL(fighter);
     }
-    frame(lua_state, 16.0);
+    frame(lua_state, 12.0);
     if is_excute(fighter) {
         FLASH(fighter, 1, 0.4, 0, 0.3);
     }
@@ -209,13 +209,14 @@ unsafe fn buddy_special_air_s_start_sound(fighter: &mut L2CAgentBase) {
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
     
     //WorkModule::is_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+    frame(lua_state, 3.0);
     if is_excute(fighter) {
         let play_vc = app::sv_math::rand(hash40("fighter"), 3);
         if play_vc == 0 {
             PLAY_SE(fighter, Hash40::new("vc_buddy_smash_h01_vc"));
         }
     }
-    frame(lua_state, 3.0);
+    frame(lua_state, 4.0);
     if is_excute(fighter) {
         PLAY_SE(fighter, Hash40::new("se_buddy_special_s04_01"));
     }
@@ -309,13 +310,13 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             0.0
         );
     }
-    frame(lua_state, 13.0);
+    frame(lua_state, 8.0);
     FT_MOTION_RATE(fighter, 2.0);
-    frame(lua_state, 15.0);
+    frame(lua_state, 10.0);
     FT_MOTION_RATE(fighter, 1.0);
 
     //6 frames of armor
-    frame(lua_state, 19.0);
+    frame(lua_state, 14.0);
     if is_excute(fighter) {
         damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 7.0);
     }
@@ -366,6 +367,15 @@ unsafe fn buddy_special_air_s_wall_game(fighter: &mut L2CAgentBase) {
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state); 
     
     //DamageModule::add_damage(fighter.module_accessor, 10.0,0);
+    frame(lua_state, 19.0);
+    if is_excute(fighter) {
+        if (WorkModule::is_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_LANDING_HEAVY))
+        {
+            FT_MOTION_RATE(fighter, 2.0);
+        }
+    }
+    //frame(lua_state, 42.0);
+    //FT_MOTION_RATE(fighter, 1.0);
     frame(lua_state, 47.0);
     if is_excute(fighter) {
         WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_LANDING_HEAVY);
@@ -403,10 +413,10 @@ pub fn install() {
         buddy_special_air_s_dash_effect,
         buddy_special_air_s_dash_sound,
         buddy_special_air_s_wall_game,
-        buddy_special_air_s_wall_sound,
+        buddy_special_air_s_wall_sound
         
-        buddy_special_s_fail_game,
-        buddy_special_s_start_effect,
-        buddy_special_s_dash_effect
+        //buddy_special_s_start_effect,
+        //buddy_special_s_dash_effect,
+        //buddy_special_s_fail_game
     );
 }

@@ -163,7 +163,6 @@ Specs:
 + Shield Damage: 0->4
 + Guard-cancel during dash
 + Trajectory control (on startup)
-+ Landing hitbox (Active for 2 frames on self damage)
 + Can tech walls
 + Bonk FAF (wall only): 37->20 
 ```
