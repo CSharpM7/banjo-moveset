@@ -7,6 +7,7 @@ static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BAYONET_STATE: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
+static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
 static mut FEATHERS_RED_COOLDOWN: i32 = 0;
 static mut FEATHERS_RED_COOLDOWN_MAX: i32 = 180;
 
@@ -45,6 +46,7 @@ unsafe fn sidespecial_passive(fighter: &mut L2CFighterCommon, boma: &mut BattleO
     {
         //Clear speed
         KineticModule::change_kinetic(fighter.module_accessor, *FIGHTER_KINETIC_TYPE_AIR_STOP); 
+        KineticModule::clear_speed_all(fighter.module_accessor);
         sv_kinetic_energy!(
             clear_speed,
             fighter,
@@ -92,6 +94,18 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         {
             BEAKBOMB_ANGLE = 0.0;
         }
+        
+        sv_kinetic_energy!(
+            clear_speed,
+            fighter,
+            FIGHTER_KINETIC_ENERGY_ID_GRAVITY
+        );
+        sv_kinetic_energy!(
+            set_accel,
+            fighter,
+            FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+            0.0
+        );
     }
     //Do not update flight during hitstop
     let in_Hitstop = SlowModule::frame(fighter.module_accessor, *FIGHTER_SLOW_KIND_HIT) > 0 ;
@@ -101,7 +115,7 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     let motion_factor = 0.375;
     let motion_offset = -0.125;
     let motion_vec = Vector3f{x: 0.0, y: motion_offset+(BEAKBOMB_ANGLE*motion_factor), z: 0.0};
-    KineticModule::add_speed_outside(boma, *KINETIC_OUTSIDE_ENERGY_TYPE_WIND_NO_ADDITION, &motion_vec);
+    KineticModule::add_speed_outside(fighter.module_accessor, *KINETIC_OUTSIDE_ENERGY_TYPE_WIND_NO_ADDITION, &motion_vec);
 
     //Drop item
     let z_drop = fighter.is_button_on(Buttons::Catch);
@@ -316,7 +330,7 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
 	if (side_special && fighter.motion_frame()<=2.0)
 	{
 		buddy_meter_display_update(fighter,boma,RedFeather);
-		HUD_DISPLAY_TIME=(0.75*60.0) as i32;
+		HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
 	}
 	if (HUD_DISPLAY_TIME>0)
 	{
@@ -341,7 +355,7 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
 			if (HUD_DISPLAY_TIME==0)
 			{
 				buddy_meter_display_update(fighter,boma,true);
-				HUD_DISPLAY_TIME=60;
+				HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
 			}
 		}
 	}
