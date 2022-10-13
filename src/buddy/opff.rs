@@ -5,6 +5,7 @@ utils::import_noreturn!(common::opff::fighter_common_opff);
 static mut BEAKBOMB_ACTIVE: bool = false;
 static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
+static mut BEAKBOMB_FRAME: i32 = 0; //0-2 for strength. 0 for a normal wall
 static mut BAYONET_STATE: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
 static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
@@ -142,6 +143,7 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     //While BEAKBOMB_ACTIVE, enable control
     if (side_special_dash && in_Air)
     {
+        BEAKBOMB_FRAME +=1;
         beakbomb_checkForHit(fighter,boma);
         beakbomb_control(fighter,boma);
     }
@@ -153,6 +155,7 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     else if (!in_Air && BEAKBOMB_ACTIVE)
     {
         BEAKBOMB_ACTIVE=false;
+        BEAKBOMB_FRAME=0;
         if (side_special_wall)
         {
             fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
@@ -169,7 +172,10 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
 unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let has_hit_foe = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_HIT);
     let has_hit_shield = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
-    if !(has_hit_shield || has_hit_foe) {
+    if !(has_hit_shield 
+        //|| has_hit_foe
+    ) 
+    {
         beakbomb_checkForFail(fighter,boma);
         return;
     }
@@ -212,9 +218,9 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 
 unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let is_grounded = fighter.is_situation(*SITUATION_KIND_GROUND);
-    let cancel_frame = 5.0;
-    let cancel_cutoff = 25.0;
-    let can_fail = cancel_frame < fighter.motion_frame() && fighter.motion_frame() < cancel_cutoff;
+    let cancel_frame = 5;
+    let cancel_cutoff = 25;
+    let can_fail = cancel_frame < BEAKBOMB_FRAME && BEAKBOMB_FRAME < cancel_cutoff;
     if !(is_grounded) {return;}
 
     if (can_fail)
@@ -323,11 +329,11 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
     let side_special = [
         *FIGHTER_STATUS_KIND_SPECIAL_S,
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH,
-        //*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL,
         //*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL,
 		*FIGHTER_STATUS_KIND_REBIRTH
     ].contains(&status);
-	if (side_special && fighter.motion_frame()<=3.0)
+	if (side_special && fighter.motion_frame()<=2.0)
 	{
 		buddy_meter_display_update(fighter,boma,RedFeather);
 		HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
@@ -367,17 +373,6 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
         {
             FEATHERS_RED_COOLDOWN = FEATHERS_RED_COOLDOWN_MAX;
         }
-        /*
-        else if (status == *FIGHTER_STATUS_KIND_SPECIAL_S)
-        {
-            if (in_Air && FEATHERS_RED_COOLDOWN > 0)
-                {WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);}
-            else if (!in_Air && WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN) == 0)
-                {WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);}
-            else
-                {WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);}
-        }
-        */
 	}
 }
 
@@ -392,6 +387,12 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
+        //println!("{}",BAYONET_STATE);
+        let status = StatusModule::status_kind(fighter.module_accessor);
+        if (status > 400)
+        {
+            println!("{}",status);
+        }
     }
 }
 

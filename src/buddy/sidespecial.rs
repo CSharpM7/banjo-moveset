@@ -312,18 +312,20 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
             0.0
         );
-
+        SET_SPEED_EX(fighter, -0.375, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
         FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);
     }
     frame(lua_state, 8.0);
     FT_MOTION_RATE(fighter, 2.0);
     frame(lua_state, 10.0);
+    if is_excute(fighter) {
+        SET_SPEED_EX(fighter, 0, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+    }
     FT_MOTION_RATE(fighter, 1.0);
 
     frame(lua_state, 12.0);
     if is_excute(fighter) {
-        let lr = smash::app::sv_animcmd::get_value_float(lua_state,*SO_VAR_FLOAT_LR);
-        SET_SPEED_EX(fighter, 2.5, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+        SET_SPEED_EX(fighter, 2.0, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
     }
     //6 frames of armor
     frame(lua_state, 14.0);
