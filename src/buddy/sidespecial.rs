@@ -312,7 +312,7 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
             0.0
         );
-        SET_SPEED_EX(fighter, -0.375, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+        SET_SPEED_EX(fighter, -0.5, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
         FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);
     }
     frame(lua_state, 8.0);
@@ -352,23 +352,26 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         let shieldDamage = 4;
         //WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_SUPER_ARMOR);
         JostleModule::set_status( boma, false);
-        ATTACK(fighter, 0, 0, Hash40::new("top"), 16.0, 43, 70, 0, 66, 4.2, 0.0, 9.2, 8.8, Some(0.0), Some(9.2), Some(11.4), 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
+        ATTACK(fighter, 0, 0, Hash40::new("top"), 16.0, 43, 70, 0, 66, 3.2, 0.0, 7.2, 8.8, Some(0.0), Some(7.2), Some(12.4), 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
         ATTACK(fighter, 1, 0, Hash40::new("top"), 16.0, 43, 70, 0, 66, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
         WorkModule::on_flag( boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_CLIFF_CHECK);
-
         ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.5);
-    }
-    //Remove transition hurtbox
-    wait(lua_state, 1.0);
-    if is_excute(fighter) {
-        AttackModule::clear(fighter.module_accessor, 1, false);
+        
+        HIT_NO(fighter, 12, *HIT_STATUS_NORMAL);
+        HIT_NO(fighter, 13, *HIT_STATUS_NORMAL);
+        HIT_NO(fighter, 14, *HIT_STATUS_NORMAL);
+        HIT_NO(fighter, 15, *HIT_STATUS_NORMAL);
+        HIT_NO(fighter, 16, *HIT_STATUS_NORMAL);
+        HIT_NO(fighter, 17, *HIT_STATUS_NORMAL);
     }
     //Weaker hitbox
     frame(lua_state, 18.0);
     if is_excute(fighter) {
-        ATTACK(fighter, 0, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 4.2, 0.0, 9.2, 8.8, Some(0.0), Some(9.2), Some(11.4), 1.0, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
+        ATTACK(fighter, 0, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 3.2, 0.0, 7.2, 8.8, Some(0.0), Some(7.2), Some(12.4), 1.0, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
+
+        ATTACK(fighter, 1, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.25);
     }
 }
