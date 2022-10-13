@@ -72,6 +72,9 @@
     <hash40 index="68">dummy</hash40>
     <hash40 index="69">dummy</hash40>
     <struct index="70">
+      <float hash="jump_y">31.0</float>
+      <float hash="jump_aerial_y">33.0</float>
+      <float hash="dash_speed">1.84</float>
       <float hash="landing_attack_air_frame_n">8</float>
       <float hash="landing_attack_air_frame_f">11</float>
       <float hash="landing_attack_air_frame_b">18</float>

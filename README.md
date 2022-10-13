@@ -4,6 +4,17 @@
 SUM fighter-code-edits channel: invaluable help
 HDR Dev Team: Opensource macros used to help make this possible
 
+## Base stats
+
+```diff
+Specs:
++ FAF: 34->29
++ Damage: 5.8->7.8
++ Autocancel: 30->26
+! KBG: 80->100
+! BKG: 42->37
+```
+
 ## Uptilt
 A new uptilt with a Banjo hitbox, and a Kazooie hitbox. This is an extremely unorthodox move with two different hitboxes serving two unique purposes. If you can master sliding uptilt and pivot tilts, this move might prove very useful.
 
@@ -151,11 +162,13 @@ Specs:
 - FAF: 30 -> 45
 - Invincibility removed
 - Hitbox size decreased
+- Kazooie Hurtbox active
 - Self damage on landing (during certain frames)
 - Damage: 22/16 -> 16/10
 - Recoil on shield
 - 3 second cooldown
 ! 7% Armor on frames 16-22
+! BKB: 66->76
 ! KBG: 64->70
 + Items can be ZDropped during dash animation
 + No longer uses Gold Feathers
@@ -164,7 +177,7 @@ Specs:
 + Guard-cancel during dash
 + Trajectory control (on startup)
 + Can tech walls
-+ Bonk FAF (wall only): 37->20 
++ Bonk FAF: 37->30? 
 ```
 
 # Summary

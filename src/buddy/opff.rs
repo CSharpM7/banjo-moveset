@@ -119,10 +119,12 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     KineticModule::add_speed_outside(fighter.module_accessor, *KINETIC_OUTSIDE_ENERGY_TYPE_WIND_NO_ADDITION, &motion_vec);
 
     //Drop item
+    /*
     let z_drop = fighter.is_button_on(Buttons::Catch);
     if (z_drop){
         ItemModule::throw_item(fighter.module_accessor, 300.0, 3.0, 1.0, 0, true, 0.0);
     }
+    */
 }
 unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let status = StatusModule::status_kind(fighter.module_accessor);
@@ -210,7 +212,7 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 			}
             BEAKBOMB_ACTIVE = false;
     }
-	else if (fighter.motion_frame() > 17.0 && BEAKBOMB_BOUNCE==0)
+	else if (fighter.motion_frame() >= 17.0 && BEAKBOMB_BOUNCE==0)
 	{
         WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_LANDING_HEAVY);
 	}
@@ -367,9 +369,14 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
 	}
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
 	buddy_meter_display(fighter,boma,in_Air);
-    if (fighter.motion_frame() <= 2.0)
+    if (fighter.motion_frame() <= 2.0 && in_Air)
     {
-        if (in_Air && status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH)
+        if (status == *FIGHTER_STATUS_KIND_CLIFF_CATCH
+        && FEATHERS_RED_COOLDOWN > FEATHERS_RED_COOLDOWN_MAX-5)
+        {
+            FEATHERS_RED_COOLDOWN = 1;
+        }
+        else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH)
         {
             FEATHERS_RED_COOLDOWN = FEATHERS_RED_COOLDOWN_MAX;
         }
@@ -387,11 +394,37 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
-        //println!("{}",BAYONET_STATE);
         let status = StatusModule::status_kind(fighter.module_accessor);
-        if (status > 400)
+        if fighter.is_motion(Hash40::new("jump_aerial_f2"))
         {
-            println!("{}",status);
+            let is_jumping = fighter.is_button_on(Buttons::Jump);
+            let flutter_frame = 35.0;
+            let speed_y = KineticModule::get_sum_speed_y(boma,*FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
+            let can_flutter = fighter.motion_frame() < flutter_frame
+            && speed_y < 0.25;
+            if (is_jumping && can_flutter) {
+                /*
+                sv_kinetic_energy!(
+                    set_speed,
+                    fighter,
+                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+                    -0.08
+                  );
+                */
+                sv_kinetic_energy!(
+                    set_accel,
+                    fighter,
+                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+                    -0.015 // hardcoded value for now
+                );
+                sv_kinetic_energy!(
+                    set_stable_speed,
+                    fighter,
+                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+                    -0.25// hardcoded value for now
+                );
+            }
+            println!("{}",speed_y);
         }
     }
 }

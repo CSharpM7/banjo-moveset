@@ -53,7 +53,7 @@ unsafe fn buddy_attack_smash_hi_game(fighter: &mut L2CAgentBase) {
         FighterAreaModuleImpl::enable_fix_jostle_area( boma, 4.0, 3.0);
     }
     frame(lua_state, 1.0);
-    FT_MOTION_RATE(fighter, 0.5);
+    FT_MOTION_RATE(fighter, 2.0);
     frame(lua_state, 3.0);
     FT_MOTION_RATE(fighter, 1.0);
     //Charge on frame 5

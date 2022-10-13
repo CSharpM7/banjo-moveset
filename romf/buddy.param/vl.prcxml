@@ -89,8 +89,8 @@
   <list hash="fly_data">
     <struct index="0">
       <list hash="speed_y_table">
-        <hash40 index="0">dummy</hash40>
-        <hash40 index="1">dummy</hash40>
+		<float index="0">2.18</float>
+		<float index="1">2.0</float>
       </list>
       <list hash="turn_param">
         <hash40 index="0">dummy</hash40>
@@ -151,8 +151,10 @@
       <float hash="dash_gravity_mul">0.0</float>
       <float hash="dash_gravity_limit_mul">0.0</float>
 	  
-      <float hash="attack_mul_on_hit_on_air">0.9</float>
-      <float hash="speed_x_mul_on_hit_on_air">0.0</float>
+      <float hash="attack_mul_on_hit_on_ground">1</float>
+      <float hash="speed_x_mul_on_hit_on_ground">1.0</float>
+      <float hash="attack_mul_on_hit_on_air">1</float>
+      <float hash="speed_x_mul_on_hit_on_air">1.0</float>
       <int hash="dash_time">36</int>
 	  
       <float hash="dash_end_speed_x_mul_air">1.3</float>
@@ -166,25 +168,35 @@
     <hash40 index="3">dummy</hash40>
   </list>
   <list hash="param_special_hi">
-    <hash40 index="0">dummy</hash40>
+    <struct index="0">
+      <int hash="charge_min_frame">10</int>
+      <float hash="trans_move_mul_max">1.3</float>
+    </struct>
     <hash40 index="1">dummy</hash40>
     <hash40 index="2">dummy</hash40>
     <hash40 index="3">dummy</hash40>
   </list>
   <list hash="param_pad">
-    <hash40 index="0">dummy</hash40>
+    <struct index="0">
+      <int hash="life">300</int>
+    </struct>
     <hash40 index="1">dummy</hash40>
     <hash40 index="2">dummy</hash40>
     <hash40 index="3">dummy</hash40>
   </list>
   <list hash="param_special_lw">
-    <hash40 index="0">dummy</hash40>
+    <struct index="0">
+      <int hash="hop_max">2</int>
+    </struct>
     <hash40 index="1">dummy</hash40>
     <hash40 index="2">dummy</hash40>
     <hash40 index="3">dummy</hash40>
   </list>
   <list hash="map_collision_buddybomb">
-    <hash40 index="0">dummy</hash40>
+    <struct index="0">
+      <int hash="life">180</int>
+      <int hash="init_bound_frame">180</int>
+    </struct>
   </list>
   <list hash="param_bigbird">
     <hash40 index="0">dummy</hash40>
