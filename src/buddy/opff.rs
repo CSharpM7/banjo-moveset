@@ -327,7 +327,7 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
         //*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL,
 		*FIGHTER_STATUS_KIND_REBIRTH
     ].contains(&status);
-	if (side_special && fighter.motion_frame()<=2.0)
+	if (side_special && fighter.motion_frame()<=3.0)
 	{
 		buddy_meter_display_update(fighter,boma,RedFeather);
 		HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;

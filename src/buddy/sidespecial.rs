@@ -298,6 +298,9 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
     let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
 
     if is_excute(fighter) {
+        //Clear speed
+        KineticModule::change_kinetic(fighter.module_accessor, *FIGHTER_KINETIC_TYPE_AIR_STOP); 
+        KineticModule::clear_speed_all(fighter.module_accessor);
         sv_kinetic_energy!(
             clear_speed,
             fighter,
@@ -309,15 +312,23 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
             0.0
         );
+
+        FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);
     }
     frame(lua_state, 8.0);
     FT_MOTION_RATE(fighter, 2.0);
     frame(lua_state, 10.0);
     FT_MOTION_RATE(fighter, 1.0);
 
+    frame(lua_state, 12.0);
+    if is_excute(fighter) {
+        let lr = smash::app::sv_animcmd::get_value_float(lua_state,*SO_VAR_FLOAT_LR);
+        SET_SPEED_EX(fighter, 2.5, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+    }
     //6 frames of armor
     frame(lua_state, 14.0);
     if is_excute(fighter) {
+        FighterAreaModuleImpl::disable_fix_jostle_area(boma);
         damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 7.0);
     }
     wait(lua_state, 6.0);
