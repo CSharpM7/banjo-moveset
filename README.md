@@ -8,11 +8,12 @@ HDR Dev Team: Opensource macros used to help make this possible
 
 ```diff
 Specs:
-+ FAF: 34->29
-+ Damage: 5.8->7.8
-+ Autocancel: 30->26
-! KBG: 80->100
-! BKG: 42->37
++ Initial Dash: 1.64->1.84
++ Ground Jump: 29.8->31.0
+! Air Jump: 32.0->33.0
++ Air Jump Y Velocity: 2.18/2.12->2.25/2.20
++ Air Jump X Velocity Multiplier: 0.8->1.0
++ Air Jump Frame: 30->24
 ```
 
 ## Uptilt
@@ -71,11 +72,11 @@ Specs (Changes based on original Uptilt):
 ```
 
 ## Nair
-Banjo now has an extremely versatile nair! Banjo swings his backpack 360 degrees, hitting in front, behind and then in front again. The bag is the sweetspot, while Banjo's arms are the sourspot. The first hit is the strongest, comparable to a slightly weaker Samus nair. The back hit is noticeably weaker, but gets opponents off of you. For the final hit, the sweetspot pops opponents up which can lead into fair/upsmash, but is harder to land.
+Banjo now has an extremely versatile nair! Banjo swings his backpack 360 degrees, hitting in front, behind and then in front again. The bag is the sweetspot, while Banjo's arms are the sourspot. The first hit is the strongest, comparable to a slightly weaker Lucina nair. The back hit is slightly weaker, but gets opponents off of you. For the final hit, the sweetspot pops opponents up which can lead into fair/upsmash, but is harder to land.
 
 Advantages:
 - Safer
-- Can combo into fair and upsmash
+- Can combo into fair, uptilt, upair and upsmash
 - KOs earlier
 - Less landing lag
 
@@ -90,19 +91,47 @@ Specs:
 - Autocancellable on frames 1-6, 42+
 + Landing lag: 8
 - Final Frame: 54
++ Damage: 12/10, 11/9, 5/3
++ Shield Advantage: -8
 ```
 
 ## Upair
-Upair gets a much needed damage buff, and becomes easier to combo into itself
+Upair gets a slight damage buff, and becomes easier to combo into itself. Best used at low percents
 
 ```diff
 Specs:
 + FAF: 34->29
 + Damage: 5.8->7.8
 + Autocancel: 30->26
++ Landing Lag: 12->9
 ! KBG: 80->100
 ! BKG: 42->37
 ```
+
+## Back air
+Back air gets a slight damage buff
+
+```diff
+Specs:
++ Damage: 1.6/4.8->2.6/5.8
+! KBG: 136->96
+! BKB: 72->68
+```
+## Down air
+Down air gets a damage buff, lasts longer and will spike sooner. However, you will also fall faster.
+
+```diff
+Specs:
++ Damage (Spike): 10->13
++ BKB: 20->45
++ Active Frames (Spike): 15-17->15-20
++ Landing Lag: 27->22
++ Hitbox Size: 4.8/5.2 -> 6.8
++ Landing hitbox radius: 8->9
++ FAF: 57->50?
+- Fall Velocity: 3.8->4.0
+```
+
 ## Fthrow
 FThrow is now a much better "get off me" throw, as opponents now get sent further away. Tech chasing with wonderwing at low percents has also been removed, as well as the other low percent combos.
 
@@ -114,18 +143,19 @@ Specs:
 ! BKG: 68->75
 ```
 ## Upthrow
-Upthrow becomes a more useful juggle throw. 
+Upthrow becomes a more useful juggle throw, comboing into upair until 60%+, and comboing into backair as well.
 
 ```diff
 Specs:
 + FAF: 56->46 (animation has been speed up as well, making FAF even sooner)
++Angle: 88->95
 ! BKB: 72->60
 ! KBG: 64->60
 ```
 
 ## Breegull Blaster (Neutral Special Stance)
 Eggs no longer decay from spamming (they still deal less damage than Megaman pellets), and the FAF from cancelling is now sooner.
-When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes Smash Turnaround Cancels, and by extension, TAS Shot
+When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes TAS Shot and Smash Turnaround Cancel
 
 Advantages:
 - Can launch opponents away during stance
@@ -133,8 +163,7 @@ Advantages:
 - Eggs no longer lose strength while spamming
 
 Disadvantages:
-- No more TAS Shot
-- Smash Turnaround Cancel -> Wonderwing also gone
+- No more TAS Shot or Smash Turnaround Cancel
 
 ```diff
 Specs:
@@ -143,8 +172,6 @@ Specs:
 ! FTilt FAF (From Stance): 31->27
 ```
 
-## Shock Spring Pad (Up Special)
-Falling hitbox size increased to more accurately reflect the model
 
 ## Wonderwing (Side Special Ground)
 After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward. Guard-canceling will deactivate the hitbox.
@@ -152,9 +179,9 @@ After using a gold feather, you can guard-cancel the move into the breaking anim
 ## Beakbomb (Side Special Air)
 A new aerial side special that acts like an overall nerf to wonderwing, but also helps Banjo! This move has no invisibility and a smaller hitbox. It deals less damage, so grenegg into sideB doesn't really kill until higher percents. The move also has brief 7% armor on startup, and will send Banjo further and costs no gold feathers to use. Do note that this move has a 3 second cooldown on completion. 
 
-You can also choose which angle to fly in by holding up or down on the control stick before taking off! Take care while flying, as landing on the ground too early will deal 10% damage and put you into the fail animation. Hitting sheilds is ill-advised, as you will recoil (akin to Flare Blitz). If you find yourself about to hit a wall, you can press the shield button within the first 4 frames of hitting a wall to perform a tech! Holding up lets you perform a walljump tech.
+You can also choose which angle to fly in by holding up or down on the control stick before taking off! Take care while flying, as landing on the ground too early will deal 10% damage and put you into the fail animation. Hitting sheilds is ill-advised, as you will recoil (akin to Flare Blitz), and if someone parries this, you are almost certainly dead! 
 
-This move can also be guard-canceled like wonderwing, in case you accidentally b-reverse it and are headed towards the blastzone. Also, just because it's pretty cool, you can now Zdrop items while in the dash animation, transforming Kazooie into the Beak Bomber!
+If you find yourself about to hit a wall, you can press the shield button within the first 4 frames of hitting a wall to perform a tech! Holding up lets you perform a walljump tech. This move can also be guard-canceled like wonderwing, in case you accidentally b-reverse it and are headed towards the blastzone.
 
 ```diff
 Specs:
@@ -170,14 +197,30 @@ Specs:
 ! 7% Armor on frames 16-22
 ! BKB: 66->76
 ! KBG: 64->70
-+ Items can be ZDropped during dash animation
 + No longer uses Gold Feathers
-+ Airspeed: 4.5 -> 5.0
++ Airspeed: 4.5 -> 4.75
 + Shield Damage: 0->4
 + Guard-cancel during dash
 + Trajectory control (on startup)
 + Can tech walls
-+ Bonk FAF: 37->30? 
++ Bonk FAF (Wall): 37->30? 
+```
+## Shock Spring Pad (Up Special)
+Falling hitbox size increased to more accurately reflect the model. You can now release the move earlier, but the maximum height you'll gain from this move has been reduced to compensate for Banjo's better aerial jumps.
+
+```diff
+Specs:
++ Minimum Charge: 15->10
+- Max Height Multiplier: 1.28->1.25
+```
+## Grenegg (Down Special)
+Greneggs now last longer. Hold down the special button to automatically equip the egg
+
+```diff
+Specs:
++ Life: 135->195
++ Max Hops: 1->2
++ Frame 11 Equip (when holding down special)
 ```
 
 # Summary
@@ -185,10 +228,10 @@ Specs:
 With these specific changes, Banjo becomes much less of a linear character, especially when trying to seal a stock. His gameplan can now revolve around properly trapping opponents into uncomfortable situations, and pushing them offstage where his arsenal of tricks can gimp them, or deny them of returning to the stage. His lackluster ability to juggle opponents has been slightly remedied, but catching landing opponents still proves difficult. His more infamous tools have been greatly toned down, which should help playing against Banjo become a little more enjoyable. 
 
 ## Buffs
-His new nair helps push opponents further back, leading them offstage where Banjo shines best. If your spacing is on point, you can also confirm a kill of the second sweetspot of nair, similar to Marth/Lucina/Chrom/Roy, but much more telegraphed. His original uptilt moves to a smash attack which now packs some serious damage on grounded foes. His new uptilt, while extremely unorthodox, serves several different purposes. His changed throws help him juggle opponents easier, or send them out of range if you need some space.
+His new nair helps push opponents further back, leading them offstage where Banjo shines best. If your spacing is on point, you can also confirm a kill of the second sweetspot of nair, similar to Marth/Lucina/Chrom/Roy, but much more telegraphed. His original uptilt moves to a smash attack which now packs some serious damage on grounded foes. His new uptilt, while extremely unorthodox, serves several different purposes. His new upthrow and upair create a new combo at low percents to quickly tack 35%+ damage. His forward throw and back air now help establish stage control.
 
 ## Nerfs
-His new aerial side B might be more versatile as a recovery move, but it lacks any invincibility which allows opponents to spike and edgeguard him without fear. Opponents can also land on the stage without the fear of buffering an airdodge/attack right into an invincible kill move. The Beak Bayonet (Neutral B Stance Smash Attack) has the unique function of removing TAS Shot and Smash Turnaround Cancels (which could true combo into wonderwing). His new uptilt, as useful as it is, is less safe on shield and doesn't kill as early, while the new upsmash is less safe on shield and slightly slower than it's original incarnation.
+His new aerial side B might be more versatile as a recovery move, but it lacks any invincibility which allows opponents to spike and edgeguard him without fear. Opponents can also land on the stage without the fear of buffering an airdodge/attack right into an invincible kill move. If someone lands a parry on Beakbomb, it's game over. The Beak Bayonet (Neutral B Stance Smash Attack) has the unique function of removing TAS Shot. His new uptilt, as useful as it is, is less safe on shield and doesn't kill as early, while the new upsmash is less safe on shield and slightly slower than it's original incarnation.
 
 ## Competitive Placement
-Without having to struggle to take a stock or deal damage, Banjo escapes the realm of bottom tiers. However, these changes, as well as not touching up his anti-air game, prevent him from dominating a meta where this was the Banjo we got. Fast paced characters like Fox and Sheik will still shut him down, and characters that mitigate his juggling like Wario and Yoshi will still prove challenging. Though now, he has the tools to stand against bad matchups, and possibly sit comfortably as a mid or high tier.
+Without having to struggle to take a stock or deal damage, Banjo escapes the realm of bottom tiers. He has competent damage output now, and shouldn't struggle to find a kill. However, these changes, as well as not touching up his anti-air game, prevent him from dominating a meta where this was the Banjo we got. Fast paced characters like Fox and Sheik will still shut him down, and characters that mitigate his juggling like Wario and Yoshi will still prove challenging. 

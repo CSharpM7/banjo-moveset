@@ -26,8 +26,8 @@ unsafe fn buddy_attack_air_hi_game(fighter: &mut L2CAgentBase) {
     //bkb 42->37 or 57
     if is_excute(fighter) {
         AttackModule::clear_all(boma);
-        ATTACK(fighter, 0, 1, Hash40::new("top"), 5.8, 76, 97, 0, 42, 5.8, 0.0, 13.8, 0.0, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_BUDDY_WING, *ATTACK_REGION_PUNCH);
-        ATTACK(fighter, 1, 1, Hash40::new("top"), 5.8, 76, 97, 0, 42, 6.4, 0.0, 20.0, 0.0, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_BUDDY_WING, *ATTACK_REGION_PUNCH);
+        ATTACK(fighter, 0, 1, Hash40::new("top"), 6.8, 76, 97, 0, 40, 5.8, 0.0, 13.8, 0.0, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_BUDDY_WING, *ATTACK_REGION_PUNCH);
+        ATTACK(fighter, 1, 1, Hash40::new("top"), 6.8, 76, 97, 0, 40, 6.4, 0.0, 20.0, 0.0, None, None, None, 1.0, 1.0, *ATTACK_SETOFF_KIND_ON, *ATTACK_LR_CHECK_POS, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_BUDDY_WING, *ATTACK_REGION_PUNCH);
     }
     wait(lua_state, 1.0);
     if is_excute(fighter) {
@@ -46,9 +46,19 @@ unsafe fn buddy_attack_air_hi_game(fighter: &mut L2CAgentBase) {
     }
 }
 
+#[acmd_script( agent = "buddy", script = "game_landingairhi" , category = ACMD_GAME , low_priority)]
+unsafe fn buddy_landing_air_hi_game(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    
+    frame(lua_state, 4.0);
+    FT_MOTION_RATE(fighter, 0.5);
+    frame(lua_state, 10.0);
+    FT_MOTION_RATE(fighter, 1);
+}
 
 pub fn install() {
     install_acmd_scripts!(
-        buddy_attack_air_hi_game
+        buddy_attack_air_hi_game,
+        buddy_landing_air_hi_game
     );
 }

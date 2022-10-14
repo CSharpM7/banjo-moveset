@@ -234,7 +234,7 @@ unsafe fn buddy_special_air_s_dash_sound(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         let play_vc = app::sv_math::rand(hash40("fighter"), 100);
         if play_vc == 0 {
-            PLAY_SE(fighter, Hash40::new("vc_buddy_damage_twinkle"));
+            //PLAY_SE(fighter, Hash40::new("vc_buddy_damage_twinkle"));
         }
     }
     frame(lua_state, 3.0);
@@ -313,7 +313,7 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             0.0
         );
         SET_SPEED_EX(fighter, -0.5, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
-        FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);
+        //FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);
     }
     frame(lua_state, 8.0);
     FT_MOTION_RATE(fighter, 2.0);
@@ -330,7 +330,7 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
     //6 frames of armor
     frame(lua_state, 14.0);
     if is_excute(fighter) {
-        FighterAreaModuleImpl::disable_fix_jostle_area(boma);
+        //FighterAreaModuleImpl::disable_fix_jostle_area(boma);
         damage!(fighter, *MA_MSC_DAMAGE_DAMAGE_NO_REACTION, *DAMAGE_NO_REACTION_MODE_DAMAGE_POWER, 7.0);
     }
     wait(lua_state, 6.0);
@@ -357,7 +357,7 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         ATTACK(fighter, 1, 0, Hash40::new("top"), 16.0, 43, 70, 0, 76, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, shieldDamage, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
         
         WorkModule::on_flag( boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_CLIFF_CHECK);
-        ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.5);
+        //ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.5);
         
         HIT_NO(fighter, 12, *HIT_STATUS_NORMAL);
         HIT_NO(fighter, 13, *HIT_STATUS_NORMAL);
@@ -372,7 +372,7 @@ unsafe fn buddy_special_air_s_dash_game(fighter: &mut L2CAgentBase) {
         ATTACK(fighter, 0, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 3.2, 0.0, 9.2, 8.8, Some(0.0), Some(7.2), Some(12.4), 1.0, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
 
         ATTACK(fighter, 1, 0, Hash40::new("top"), 10.0, 43, 57, 0, 66, 4.2, 0.0, 4.2, 2.8, None,None,None, 1.125, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_F, false, 0, 0.0, 0, false, false, false, false, true, *COLLISION_SITUATION_MASK_GA, *COLLISION_CATEGORY_MASK_NO_FLOOR, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_L, *COLLISION_SOUND_ATTR_KICK, *ATTACK_REGION_BODY);
-        ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.25);
+        //ATK_SET_SHIELD_SETOFF_MUL(fighter, 2, /*ShieldstunMul*/ 1.25);
     }
 }
 

@@ -6,12 +6,12 @@ static mut BEAKBOMB_ACTIVE: bool = false;
 static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BEAKBOMB_FRAME: i32 = 0; //0-2 for strength. 0 for a normal wall
-static mut BAYONET_STATE: i32 = 0;
+static mut BAYONET_STATE: i32 = -1; //-1 not in Breegull. 0 in breegull.
 static mut HUD_DISPLAY_TIME: i32 = 0;
 static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
 static mut FEATHERS_RED_COOLDOWN: i32 = 0;
 static mut FEATHERS_RED_COOLDOWN_MAX: i32 = 180;
-
+static mut FLUTTER_STATE: i32 = 0; //0 inactive, 1 active, -1 disabled
 
 // Use a different move while using SideB in the air
 unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){ 
@@ -200,9 +200,9 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
         KineticModule::resume_energy(boma, *FIGHTER_KINETIC_ENERGY_ID_CONTROL);
             //WorkModule::off_flag(boma, *FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING);
             let x_bounce = match BEAKBOMB_BOUNCE{
-                0=> -1.5,
-                2=> -2.5,
-                _=> -2.0
+                0=> -1.0,
+                2=> -2.0,
+                _=> -1.5
             };
             let y_bounce = if (BEAKBOMB_BOUNCE<1) {0.5} else {1.0};
             WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
@@ -242,7 +242,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     if (in_Air)
     {
-        BAYONET_STATE=0;
+        BAYONET_STATE=-1;
         return;
     }
 
@@ -251,10 +251,13 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     if [
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_F,
-        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_B
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_WALK_B,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_TURN,
+        *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_LANDING
     ].contains(&status) {
-        if (BAYONET_STATE==0)
+        if (BAYONET_STATE<=0)
         {
+			BAYONET_STATE=0;
             let is_csticking = ControlModule::get_command_flag_cat(fighter.module_accessor, 0) & *FIGHTER_PAD_CMD_CAT1_FLAG_ATTACK_S4 != 0;
 
             let transition_frame = 3.0;
@@ -270,7 +273,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
             fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
         }
     }
-    else if (status == *FIGHTER_STATUS_KIND_ATTACK_S3 && BAYONET_STATE==1)
+    else if (status == *FIGHTER_STATUS_KIND_ATTACK_S3 && BAYONET_STATE>=0)
     {
         let transition_frame = 21.0;
         let can_cancel = fighter.motion_frame() >= transition_frame;
@@ -288,7 +291,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     }
     else
     {
-        BAYONET_STATE=0;
+        BAYONET_STATE=-1;
     }
 }
 
@@ -351,10 +354,10 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
 }
 unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let status = StatusModule::status_kind(fighter.module_accessor);
+    let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
 	if (FEATHERS_RED_COOLDOWN>0)
 	{
 		FEATHERS_RED_COOLDOWN -= 1;
-        WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
 		if (FEATHERS_RED_COOLDOWN<=0)
 		{
 			FEATHERS_RED_COOLDOWN = 0;
@@ -366,8 +369,15 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
 				HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
 			}
 		}
+        else if (in_Air)
+        {
+			WorkModule::on_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+        }
+		else
+		{
+            WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
+		}
 	}
-    let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
 	buddy_meter_display(fighter,boma,in_Air);
     if (fighter.motion_frame() <= 2.0 && in_Air)
     {
@@ -383,6 +393,47 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
 	}
 }
 
+unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+	let status = StatusModule::status_kind(fighter.module_accessor);
+	if fighter.is_motion(Hash40::new("jump_aerial_f2"))
+	{
+		let is_jumping = fighter.is_button_on(Buttons::Jump);
+		let flutter_frame = 35.0;
+		let speed_y = KineticModule::get_sum_speed_y(boma,*FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
+		let can_flutter = fighter.motion_frame() < flutter_frame
+		&& speed_y < 0.5
+		&& FLUTTER_STATE >= 0;
+		if (is_jumping && can_flutter) {
+			sv_kinetic_energy!(
+				set_accel,
+				fighter,
+				FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+				-0.05 
+			);
+			let speed_y_min = -0.025;
+			if (speed_y<speed_y_min)
+			{
+				sv_kinetic_energy!(
+					set_stable_speed,
+					fighter,
+					FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
+					speed_y_min
+				);
+			}
+			FLUTTER_STATE=1;
+		}
+		else if (!is_jumping && FLUTTER_STATE==1)
+		{
+			FLUTTER_STATE= -1;
+			KineticModule::change_kinetic(fighter.module_accessor, *FIGHTER_KINETIC_TYPE_FALL);
+		}
+	}
+	else
+	{
+		FLUTTER_STATE=0;
+	}
+}
+
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
 fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
@@ -394,38 +445,8 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
-        let status = StatusModule::status_kind(fighter.module_accessor);
-        if fighter.is_motion(Hash40::new("jump_aerial_f2"))
-        {
-            let is_jumping = fighter.is_button_on(Buttons::Jump);
-            let flutter_frame = 35.0;
-            let speed_y = KineticModule::get_sum_speed_y(boma,*FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
-            let can_flutter = fighter.motion_frame() < flutter_frame
-            && speed_y < 0.25;
-            if (is_jumping && can_flutter) {
-                /*
-                sv_kinetic_energy!(
-                    set_speed,
-                    fighter,
-                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
-                    -0.08
-                  );
-                */
-                sv_kinetic_energy!(
-                    set_accel,
-                    fighter,
-                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
-                    -0.015 // hardcoded value for now
-                );
-                sv_kinetic_energy!(
-                    set_stable_speed,
-                    fighter,
-                    FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
-                    -0.25// hardcoded value for now
-                );
-            }
-            println!("{}",speed_y);
-        }
+		println!("{}",(smash::app::sv_animcmd::get_value_float(lua_state,*SO_VAR_INT_HAVE_ITEM_KIND)));
+		//flutter(fighter,boma);
     }
 }
 
