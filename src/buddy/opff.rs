@@ -6,7 +6,8 @@ static mut BEAKBOMB_ACTIVE: bool = false;
 static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
 static mut BEAKBOMB_ANGLE: f32 = 0.0;
 static mut BEAKBOMB_FRAME: i32 = 0; //0-2 for strength. 0 for a normal wall
-static mut BAYONET_STATE: i32 = -1; //-1 not in Breegull. 0 in breegull.
+static mut BAYONET_STATE: i32 = -1; //-1 not in Breegull. 0 in breegull. 1 request attack. 2 attack
+static mut BAYONET_EGGS: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
 static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
 static mut FEATHERS_RED_COOLDOWN: i32 = 0;
@@ -257,6 +258,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     ].contains(&status) {
         if (BAYONET_STATE<=0)
         {
+			BAYONET_EGGS= WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
 			BAYONET_STATE=0;
             let is_csticking = ControlModule::get_command_flag_cat(fighter.module_accessor, 0) & *FIGHTER_PAD_CMD_CAT1_FLAG_ATTACK_S4 != 0;
 
@@ -284,6 +286,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START && BAYONET_STATE==2)
     {
         BAYONET_STATE=0;
+		WorkModule::set_int(fighter.module_accessor,BAYONET_EGGS, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
         STOP_SE(fighter, Hash40::new("se_buddy_attackhard_s03"));
         let transition_frame = 26.0;
         ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transition_frame);
@@ -433,6 +436,21 @@ unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleA
 		FLUTTER_STATE=0;
 	}
 }
+unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+	let eggs_shot = WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+	if (eggs_shot >= 10
+	&& !fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END))
+	{
+		let sweatRate = if (eggs_shot<15) {25.0} else {15.0};
+		let sweatSize = if (eggs_shot<15) {0.25} else {0.9};
+		let modulo = fighter.motion_frame() % sweatRate;
+		println!("{}",modulo);
+		if (modulo<1.0)
+		{
+			EFFECT_FOLLOW(fighter, Hash40::new("buddy_special_s_sweat"), Hash40::new("top"), 0, 8.5, 7.5, 0, 0, 0, sweatSize, true);
+		}
+	}
+}
 
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
 fn buddy_update(fighter: &mut L2CFighterCommon) {
@@ -445,7 +463,7 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         beakbomb_check(fighter,boma);
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
-		println!("{}",(smash::app::sv_animcmd::get_value_float(lua_state,*SO_VAR_INT_HAVE_ITEM_KIND)));
+		breegull_fatigue(fighter,boma);
 		//flutter(fighter,boma);
     }
 }

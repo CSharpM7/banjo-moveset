@@ -72,6 +72,10 @@
     <hash40 index="68">dummy</hash40>
     <hash40 index="69">dummy</hash40>
     <struct index="70">
+      <float hash="walk_accel_mul">0.08</float>
+      <float hash="walk_accel_add">0.12</float>
+      <float hash="walk_speed_max">1.06</float>
+      <float hash="run_speed_max">2.05</float>
       <float hash="jump_y">31.0</float>
       <float hash="jump_aerial_y">33.0</float>
       <float hash="dash_speed">1.84</float>

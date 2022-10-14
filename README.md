@@ -5,9 +5,13 @@ SUM fighter-code-edits channel: invaluable help
 HDR Dev Team: Opensource macros used to help make this possible
 
 ## Base stats
+Banjo is now much more mobile on the ground and in the air, but Kazooie has a slower run speed to compensate
 
 ```diff
 Specs:
++ Initial Dash: 1.64->1.84
++ Walk Accel (mul/add): 0.04/0.06->0.08/0.12
+- Run Speed Max: 2.18->2.05
 + Initial Dash: 1.64->1.84
 + Ground Jump: 29.8->31.0
 ! Air Jump: 32.0->33.0
@@ -154,19 +158,23 @@ Specs:
 ```
 
 ## Breegull Blaster (Neutral Special Stance)
-Eggs no longer decay from spamming (they still deal less damage than Megaman pellets), and the FAF from cancelling is now sooner.
+The FAF from cancelling is now sooner, and egg's power only decreases after the 15th egg. Remember to cancel the stance to refresh the egg's power.
 When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes TAS Shot and Smash Turnaround Cancel
 
 Advantages:
 - Can launch opponents away during stance
 - Egg confirms are now more lenient
-- Eggs no longer lose strength while spamming
+- Much more mobile
 
 Disadvantages:
 - No more TAS Shot or Smash Turnaround Cancel
 
 ```diff
 Specs:
++ Speed Multiplier: 0.5->1
++ Jump Frame: 32->30
++ Weaker Eggs: 6th egg/12th egg->15th egg
++ Visual indicator of weak eggs
 + FAF from cancel: 12->10
 ! FTilt Startup (From Stance): 7->9
 ! FTilt FAF (From Stance): 31->27
@@ -174,7 +182,7 @@ Specs:
 
 
 ## Wonderwing (Side Special Ground)
-After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward. Guard-canceling will deactivate the hitbox.
+After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward. Guard-canceling will deactivate the hitbox. Speed is also no longer lost on hit.
 
 ## Beakbomb (Side Special Air)
 A new aerial side special that acts like an overall nerf to wonderwing, but also helps Banjo! This move has no invisibility and a smaller hitbox. It deals less damage, so grenegg into sideB doesn't really kill until higher percents. The move also has brief 7% armor on startup, and will send Banjo further and costs no gold feathers to use. Do note that this move has a 3 second cooldown on completion. 
