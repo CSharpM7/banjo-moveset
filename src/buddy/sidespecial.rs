@@ -387,11 +387,11 @@ unsafe fn buddy_special_air_s_wall_game(fighter: &mut L2CAgentBase) {
     if is_excute(fighter) {
         if (WorkModule::is_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_LANDING_HEAVY))
         {
-            FT_MOTION_RATE(fighter, 0.5);
+            FT_MOTION_RATE(fighter, 1.0); //.75
         }
         else
         {
-            FT_MOTION_RATE(fighter, 0.75);
+            FT_MOTION_RATE(fighter, 1.0);
         }
     }
     //frame(lua_state, 42.0);

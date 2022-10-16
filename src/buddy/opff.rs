@@ -10,14 +10,14 @@ static mut BAYONET_STATE: i32 = -1; //-1 not in Breegull. 0 in breegull. 1 reque
 static mut BAYONET_EGGS: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
 static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
-static mut FEATHERS_RED_COOLDOWN: i32 = 0;
-static mut FEATHERS_RED_COOLDOWN_MAX: i32 = 180;
+static mut FEATHERS_RED_COOLDOWN: f32 = 0.0;
+static mut FEATHERS_RED_COOLDOWN_MAX: f32 = 600.0;
 static mut FLUTTER_STATE: i32 = 0; //0 inactive, 1 active, -1 disabled
 
 // Use a different move while using SideB in the air
 unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){ 
     let is_guarding = fighter.is_button_on(Buttons::Guard);
-    let cancel_frame = 15.0;
+    let cancel_frame = 10.0;
     let can_cancel = fighter.motion_frame() >= cancel_frame;
     if (is_guarding && can_cancel)
     {
@@ -28,7 +28,7 @@ unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){
 unsafe fn wonderwing_cancel(fighter: &mut L2CFighterCommon){ 
     //let status = StatusModule::status_kind(fighter.module_accessor);
     let is_guarding = fighter.is_button_on(Buttons::Guard);
-    let cancel_frame = 15.0;
+    let cancel_frame = 10.0;
     let can_cancel = fighter.motion_frame() >= cancel_frame;
     if (is_guarding && can_cancel)
     {
@@ -138,7 +138,7 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     let side_special_wall = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL);
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     
-	if (status == *FIGHTER_STATUS_KIND_SPECIAL_S && FEATHERS_RED_COOLDOWN >0 && in_Air)
+	if (status == *FIGHTER_STATUS_KIND_SPECIAL_S && FEATHERS_RED_COOLDOWN >0.0 && in_Air)
 	{
 		fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, true);
 	}
@@ -158,7 +158,6 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     else if (!in_Air && BEAKBOMB_ACTIVE)
     {
         BEAKBOMB_ACTIVE=false;
-        BEAKBOMB_FRAME=0;
         if (side_special_wall)
         {
             fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
@@ -168,6 +167,7 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     else if !(sideSpecial)
     {
         BEAKBOMB_ACTIVE=false;
+        BEAKBOMB_FRAME=0;
     }
 
 }
@@ -221,7 +221,7 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 
 unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let is_grounded = fighter.is_situation(*SITUATION_KIND_GROUND);
-    let cancel_frame = 5;
+    let cancel_frame = 1;
     let cancel_cutoff = 25;
     let can_fail = cancel_frame < BEAKBOMB_FRAME && BEAKBOMB_FRAME < cancel_cutoff;
     if !(is_grounded) {return;}
@@ -326,7 +326,7 @@ unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut 
 	if (RedFeather)
 	{
 		uv_offset_x = -1.5;
-		uv_offset_y = if (FEATHERS_RED_COOLDOWN == 0) {0.2} else {0.0};
+		uv_offset_y = if (FEATHERS_RED_COOLDOWN == 0.0) {0.2} else {0.0};
 		EffectModule::set_rgb(boma,handle, 1.0, 0.3, 0.0);
 	}
 	EffectModule::set_custom_uv_offset(boma, handle, &Vector2f::new(uv_offset_x,uv_offset_y), 0);
@@ -358,12 +358,13 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
 unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
     let status = StatusModule::status_kind(fighter.module_accessor);
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
-	if (FEATHERS_RED_COOLDOWN>0)
+	if (FEATHERS_RED_COOLDOWN>0.0)
 	{
-		FEATHERS_RED_COOLDOWN -= 1;
-		if (FEATHERS_RED_COOLDOWN<=0)
+		let cool = if (in_Air) {1.0} else {1.5};
+		FEATHERS_RED_COOLDOWN -= cool;
+		if (FEATHERS_RED_COOLDOWN<=0.0)
 		{
-			FEATHERS_RED_COOLDOWN = 0;
+			FEATHERS_RED_COOLDOWN = 0.0;
             WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
 			app::FighterUtil::flash_eye_info(fighter.module_accessor);
 			if (HUD_DISPLAY_TIME==0)
@@ -385,9 +386,9 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
     if (fighter.motion_frame() <= 2.0 && in_Air)
     {
         if (status == *FIGHTER_STATUS_KIND_CLIFF_CATCH
-        && FEATHERS_RED_COOLDOWN > FEATHERS_RED_COOLDOWN_MAX-5)
+        && FEATHERS_RED_COOLDOWN > FEATHERS_RED_COOLDOWN_MAX-5.0)
         {
-            FEATHERS_RED_COOLDOWN = 1;
+            FEATHERS_RED_COOLDOWN = 1.0;
         }
         else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH)
         {
@@ -442,7 +443,7 @@ unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
 	&& !fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END))
 	{
 		let sweatRate = if (eggs_shot<15) {25.0} else {15.0};
-		let sweatSize = if (eggs_shot<15) {0.25} else {0.9};
+		let sweatSize = if (eggs_shot<15) {0.625} else {0.9};
 		let modulo = fighter.motion_frame() % sweatRate;
 		println!("{}",modulo);
 		if (modulo<1.0)
@@ -474,7 +475,7 @@ fn buddy_reset(fighter: &mut L2CFighterCommon) {
         let lua_state = fighter.lua_state_agent;    
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
         if fighter.kind() == *FIGHTER_KIND_BUDDY {
-			FEATHERS_RED_COOLDOWN = 0;
+			FEATHERS_RED_COOLDOWN = 0.0;
         }
     }
 }

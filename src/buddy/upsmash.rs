@@ -66,8 +66,8 @@ unsafe fn buddy_attack_smash_hi_game(fighter: &mut L2CAgentBase) {
         //Launcher hitbox, chains into main hitbox
         ATTACK(fighter, 0, 0, Hash40::new("top"), 4.0, 110, 100, 100, 0, 5.0, 0.0, 3.0, 6.0, None, None, None, 0.0, 1.0, *ATTACK_SETOFF_KIND_OFF, *ATTACK_LR_CHECK_POS, true, 0, 0.0, 2, false, false, false, false, false, *COLLISION_SITUATION_MASK_G, *COLLISION_CATEGORY_MASK_ALL, *COLLISION_PART_MASK_ALL, false, Hash40::new("collision_attr_normal"), *ATTACK_SOUND_LEVEL_M, *COLLISION_SOUND_ATTR_PUNCH,  *ATTACK_REGION_KICK);
     }
-    //Launch box lasts for 2 frames
-    wait(lua_state, 2.0);
+    //Launch box lasts for 1 frames
+    wait(lua_state, 1.0);
     if is_excute(fighter) {
         AttackModule::clear(fighter.module_accessor, 0, false);
     }

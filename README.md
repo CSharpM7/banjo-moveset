@@ -95,8 +95,8 @@ Specs:
 - Autocancellable on frames 1-6, 42+
 + Landing lag: 8
 - Final Frame: 54
-+ Damage: 12/10, 11/9, 5/3
-+ Shield Advantage: -8
++ Damage: 10/8, 9/7, 5/3
++ Shield Advantage: -6
 ```
 
 ## Upair
@@ -130,7 +130,7 @@ Specs:
 + BKB: 20->45
 + Active Frames (Spike): 15-17->15-20
 + Landing Lag: 27->22
-+ Hitbox Size: 4.8/5.2 -> 6.8
++ Hitbox Size: 4.8/5.2 -> 5.8
 + Landing hitbox radius: 8->9
 + FAF: 57->50?
 - Fall Velocity: 3.8->4.0
@@ -142,9 +142,9 @@ FThrow is now a much better "get off me" throw, as opponents now get sent furthe
 ```diff
 Specs:
 + Damage: 3/5->4/6
-! Angle: 48->35
-! KBG: 76->87
-! BKG: 68->75
+! Angle: 48->42
+! KBG: 76->77
+! BKG: 68->65
 ```
 ## Upthrow
 Upthrow becomes a more useful juggle throw, comboing into upair until 60%+, and comboing into backair as well.
@@ -182,7 +182,7 @@ Specs:
 
 
 ## Wonderwing (Side Special Ground)
-After using a gold feather, you can guard-cancel the move into the breaking animation from frame 15 onward. Guard-canceling will deactivate the hitbox. Speed is also no longer lost on hit.
+After using a gold feather, you can guard-cancel the move into the breaking animation from frame 10 onward. Guard-canceling will deactivate the hitbox. Speed is also no longer lost on hit.
 
 ## Beakbomb (Side Special Air)
 A new aerial side special that acts like an overall nerf to wonderwing, but also helps Banjo! This move has no invisibility and a smaller hitbox. It deals less damage, so grenegg into sideB doesn't really kill until higher percents. The move also has brief 7% armor on startup, and will send Banjo further and costs no gold feathers to use. Do note that this move has a 3 second cooldown on completion. 
@@ -195,23 +195,23 @@ If you find yourself about to hit a wall, you can press the shield button within
 Specs:
 - Startup: 18 -> 22
 - FAF: 30 -> 45
+- FAF (Wall): 47->52 
 - Invincibility removed
 - Hitbox size decreased
 - Kazooie Hurtbox active
 - Self damage on landing (during certain frames)
 - Damage: 22/16 -> 16/10
 - Recoil on shield
-- 3 second cooldown
+- 10 second cooldown (cooldown speeds up when on ground)
 ! 7% Armor on frames 16-22
 ! BKB: 66->76
 ! KBG: 64->70
 + No longer uses Gold Feathers
-+ Airspeed: 4.5 -> 4.75
++ Airspeed: 4.5 -> 4.6
 + Shield Damage: 0->4
 + Guard-cancel during dash
 + Trajectory control (on startup)
 + Can tech walls
-+ Bonk FAF (Wall): 37->30? 
 ```
 ## Shock Spring Pad (Up Special)
 Falling hitbox size increased to more accurately reflect the model. You can now release the move earlier, but the maximum height you'll gain from this move has been reduced to compensate for Banjo's better aerial jumps.
