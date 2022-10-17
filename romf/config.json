@@ -1,0 +1,28 @@
+{
+	"new-dir-files": {
+		"fighter/buddy/c00": [
+			"fighter/buddy/motion/body/c00/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c01": [
+			"fighter/buddy/motion/body/c01/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c02": [
+			"fighter/buddy/motion/body/c02/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c03": [
+			"fighter/buddy/motion/body/c03/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c04": [
+			"fighter/buddy/motion/body/c04/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c05": [
+			"fighter/buddy/motion/body/c05/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c06": [
+			"fighter/buddy/motion/body/c06/d00specialnreturn.nuanmb"
+		],
+		"fighter/buddy/c07": [
+			"fighter/buddy/motion/body/c07/d00specialnreturn.nuanmb"
+		]
+	}
+}

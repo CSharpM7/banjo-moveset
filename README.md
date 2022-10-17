@@ -123,7 +123,7 @@ Specs:
 ! BKB: 72->68
 ```
 ## Down air
-Down air gets a damage buff, lasts longer and will spike sooner. However, you will also fall faster.
+Down air gets a damage buff, lasts longer and will spike sooner, and can now bounce off of opponents. However, you will also fall faster.
 
 ```diff
 Specs:
@@ -134,6 +134,7 @@ Specs:
 + Hitbox Size: 4.8/5.2 -> 5.8
 + Landing hitbox radius: 8->9
 + FAF: 57->50?
++ Bounce on hit/shield
 - Fall Velocity: 3.8->4.0
 ```
 

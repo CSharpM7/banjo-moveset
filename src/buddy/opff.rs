@@ -454,6 +454,17 @@ unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
 	}
 }
 
+
+unsafe fn dair_bounce(fighter: &mut L2CFighterCommon){
+    if fighter.is_motion(Hash40::new("attack_air_lw"))
+    && fighter.motion_frame() < 45.0
+    {
+        if AttackModule::is_infliction_status(fighter.module_accessor, *COLLISION_KIND_MASK_HIT | *COLLISION_KIND_MASK_SHIELD) {
+            MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, 45.0, true, true, false);
+        }
+    }
+}
+
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
 fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
@@ -466,6 +477,7 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         breegull_bayonet(fighter,boma);
 		buddy_meter_controller(fighter,boma);
 		breegull_fatigue(fighter,boma);
+		dair_bounce(fighter);
 		//flutter(fighter,boma);
     }
 }

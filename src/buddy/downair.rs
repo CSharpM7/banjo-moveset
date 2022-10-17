@@ -40,6 +40,14 @@ unsafe fn buddy_attack_air_lw_game(fighter: &mut L2CAgentBase) {
     frame(lua_state, 46.0);
     if is_excute(fighter) {
         AttackModule::clear_all(boma);
+        //Bounce//
+        if AttackModule::is_infliction_status(fighter.module_accessor, *COLLISION_KIND_MASK_HIT | *COLLISION_KIND_MASK_SHIELD) {
+            KineticModule::resume_energy(boma, *FIGHTER_KINETIC_ENERGY_ID_CONTROL);
+            WorkModule::off_flag(boma, *FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING);
+            WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
+            SET_SPEED_EX(fighter, 0, 1.625, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
+            FT_MOTION_RATE(fighter, 20.0/(57.0-46.0));
+        }
     }
     frame(lua_state, 55.0);
         if is_excute(fighter) {

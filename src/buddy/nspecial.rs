@@ -53,12 +53,22 @@ unsafe fn buddy_attack_special_n_fire2_game(fighter: &mut L2CAgentBase) {
 }
 
 
+#[acmd_script( agent = "buddy", script = "game_specialnreturn" , category = ACMD_GAME , low_priority)]
+unsafe fn buddy_attack_special_n_return_game(fighter: &mut L2CAgentBase) {
+    let lua_state = fighter.lua_state_agent;
+    let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+    if is_excute(fighter) {
+        //ArticleModule::generate_article(boma, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER);
+
+        let transition_frame = 26.0;
+        ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transition_frame);
+    }
+}
+
 pub fn install() {
     install_acmd_scripts!(
         buddy_attack_special_n_upperfire_game,
-        //buddy_attack_special_n_upperfire_effect,
-
-        buddy_attack_special_n_fire2_game
-        //buddy_attack_special_n_fire2_effect
+        buddy_attack_special_n_fire2_game,
+        buddy_attack_special_n_return_game
     );
 }
