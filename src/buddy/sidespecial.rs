@@ -310,7 +310,7 @@ unsafe fn buddy_special_air_s_start_game(fighter: &mut L2CAgentBase) {
             set_accel,
             fighter,
             FIGHTER_KINETIC_ENERGY_ID_GRAVITY,
-            0.0
+            0.05
         );
         SET_SPEED_EX(fighter, -0.5, 0, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
         //FighterAreaModuleImpl::enable_fix_jostle_area(boma, 4.0, 6.0);

@@ -11,7 +11,8 @@ static mut BAYONET_EGGS: i32 = 0;
 static mut HUD_DISPLAY_TIME: i32 = 0;
 static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
 static mut FEATHERS_RED_COOLDOWN: f32 = 0.0;
-static mut FEATHERS_RED_COOLDOWN_MAX: f32 = 600.0;
+static mut FEATHERS_RED_COOLDOWN_GROUND_RATE: f32 = 1.25;
+static mut FEATHERS_RED_COOLDOWN_MAX: f32 = 450.0;
 static mut FLUTTER_STATE: i32 = 0; //0 inactive, 1 active, -1 disabled
 
 // Use a different move while using SideB in the air
@@ -114,7 +115,7 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     if in_Hitstop {return;}
 
     //Movement
-    let motion_factor = 0.375;
+    let motion_factor = 0.425;
     let motion_offset = -0.125;
     let motion_vec = Vector3f{x: 0.0, y: motion_offset+(BEAKBOMB_ANGLE*motion_factor), z: 0.0};
     KineticModule::add_speed_outside(fighter.module_accessor, *KINETIC_OUTSIDE_ENERGY_TYPE_WIND_NO_ADDITION, &motion_vec);
@@ -360,7 +361,7 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
 	if (FEATHERS_RED_COOLDOWN>0.0)
 	{
-		let cool = if (in_Air) {1.0} else {1.5};
+		let cool = if (in_Air) {1.0} else {FEATHERS_RED_COOLDOWN_GROUND_RATE};
 		FEATHERS_RED_COOLDOWN -= cool;
 		if (FEATHERS_RED_COOLDOWN<=0.0)
 		{

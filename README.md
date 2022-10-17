@@ -1,4 +1,5 @@
 # Old Bear, New Tricks
+(note shield advantage calculated via [smash ultimate calculator](https://rubendal.github.io/SSBU-Calculator/) and can be off by a few frames based on the hit frame)
 
 ## Credits
 SUM fighter-code-edits channel: invaluable help
@@ -38,7 +39,7 @@ Disadvantages:
 ```diff
 Specs:
 + FAF: 32 -> 30
-- Shield Advantage: -11 (Banjo), -17 (Kazooie)
+- Shield Advantage: -10 (Banjo), -17 (Kazooie)
 ! Active: 6-12 (Banjo sourspot starts on 10)
 ! KBG (Banjo): 85,85
 ! BKB (Banjo): 72,42
@@ -202,7 +203,7 @@ Specs:
 - Self damage on landing (during certain frames)
 - Damage: 22/16 -> 16/10
 - Recoil on shield
-- 10 second cooldown (cooldown speeds up when on ground)
+- 7.5 second cooldown (cooldown speeds up when on ground)
 ! 7% Armor on frames 16-22
 ! BKB: 66->76
 ! KBG: 64->70
@@ -229,6 +230,8 @@ Specs:
 + Life: 135->195
 + Max Hops: 1->2
 + Frame 11 Equip (when holding down special)
+- Damage: 8->6.5
+! While equipped, will usually send in direction of motion
 ```
 
 # Summary
