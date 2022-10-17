@@ -440,11 +440,13 @@ unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleA
 }
 unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
 	let eggs_shot = WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
-	if (eggs_shot >= 10
+    let eggs_Weakest = WorkModule::get_param_int(fighter.module_accessor,hash40("param_special_n"),hash40("bakyun_power_down_2_num"));
+    let eggs_Weak = eggs_Weakest-5;
+	if (eggs_shot >= eggs_Weak
 	&& !fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_END))
 	{
-		let sweatRate = if (eggs_shot<15) {25.0} else {15.0};
-		let sweatSize = if (eggs_shot<15) {0.625} else {0.9};
+		let sweatRate = if (eggs_shot<eggs_Weakest) {25.0} else {15.0};
+		let sweatSize = if (eggs_shot<eggs_Weakest) {0.625} else {0.9};
 		let modulo = fighter.motion_frame() % sweatRate;
 		println!("{}",modulo);
 		if (modulo<1.0)

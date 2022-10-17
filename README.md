@@ -3,7 +3,7 @@
 
 ## Credits
 SUM fighter-code-edits channel: invaluable help
-HDR Dev Team: Opensource macros used to help make this possible
+HDR Dev Team: Open-source macros used to help make this possible
 
 ## Base stats
 Banjo is now much more mobile on the ground and in the air, but Kazooie has a slower run speed to compensate
@@ -39,7 +39,7 @@ Disadvantages:
 ```diff
 Specs:
 + FAF: 32 -> 30
-- Shield Advantage: -10 (Banjo), -17 (Kazooie)
+- Shield Advantage: -10 (Banjo), -15 (Kazooie)
 ! Active: 6-12 (Banjo sourspot starts on 10)
 ! KBG (Banjo): 85,85
 ! BKB (Banjo): 72,42
@@ -97,7 +97,7 @@ Specs:
 + Landing lag: 8
 - Final Frame: 54
 + Damage: 10/8, 9/7, 5/3
-+ Shield Advantage: -6
++ Shield Advantage: -7 (HEAVILY varies)
 ```
 
 ## Upair
@@ -161,7 +161,7 @@ Specs:
 
 ## Breegull Blaster (Neutral Special Stance)
 The FAF from cancelling is now sooner, and egg's power only decreases after the 15th egg. Remember to cancel the stance to refresh the egg's power.
-When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes TAS Shot and Smash Turnaround Cancel
+When inputting a smash attack during this stance, you will now perform an (angled) side tilt. This also removes TAS Shot
 
 Advantages:
 - Can launch opponents away during stance
@@ -169,7 +169,8 @@ Advantages:
 - Much more mobile
 
 Disadvantages:
-- No more TAS Shot or Smash Turnaround Cancel
+- No more TAS Shot
+- Smash Turnaround Cancel doesn't really work
 
 ```diff
 Specs:
@@ -192,6 +193,17 @@ A new aerial side special that acts like an overall nerf to wonderwing, but also
 You can also choose which angle to fly in by holding up or down on the control stick before taking off! Take care while flying, as landing on the ground too early will deal 10% damage and put you into the fail animation. Hitting sheilds is ill-advised, as you will recoil (akin to Flare Blitz), and if someone parries this, you are almost certainly dead! 
 
 If you find yourself about to hit a wall, you can press the shield button within the first 4 frames of hitting a wall to perform a tech! Holding up lets you perform a walljump tech. This move can also be guard-canceled like wonderwing, in case you accidentally b-reverse it and are headed towards the blastzone.
+
+Advantages:
+- Easier to recover with
+- No longer forced to lose a gold feather when trying to recover
+- Can tech walls if you miss the very small ledge window
+- Can avoid a potential ledge trap if your opponent commits too hard
+
+Disadvantages:
+- VERY vulnerable
+- Does not kill until MUCH later
+- Has a cooldown, so you'll have less resources to work with when trying to recover
 
 ```diff
 Specs:
@@ -224,15 +236,14 @@ Specs:
 - Max Height Multiplier: 1.28->1.25
 ```
 ## Grenegg (Down Special)
-Greneggs now last longer. Hold down the special button to automatically equip the egg
+Greneggs now last longer. Hold down the special button to automatically equip the egg. While being able to easily equip grenegg is EXTREMELY helpful for recovering/stalling, the longer grenegg lifetime is needed to help balance this out. While the damage is an overall nerf, it can make grenegg into sideB confirm at later percents.
 
 ```diff
 Specs:
-+ Life: 135->195
 + Max Hops: 1->2
 + Frame 11 Equip (when holding down special)
 - Damage: 8->6.5
-! While equipped, will usually send in direction of motion
+! Life: 135->195
 ```
 
 # Summary
