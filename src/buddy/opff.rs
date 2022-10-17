@@ -2,18 +2,19 @@ use super::*;
 utils::import_noreturn!(common::opff::fighter_common_opff);
 
 
-static mut BEAKBOMB_ACTIVE: bool = false;
-static mut BEAKBOMB_BOUNCE: i32 = 1; //0-2 for strength. 0 for a normal wall
-static mut BEAKBOMB_ANGLE: f32 = 0.0;
-static mut BEAKBOMB_FRAME: i32 = 0; //0-2 for strength. 0 for a normal wall
-static mut BAYONET_STATE: i32 = -1; //-1 not in Breegull. 0 in breegull. 1 request attack. 2 attack
-static mut BAYONET_EGGS: i32 = 0;
-static mut HUD_DISPLAY_TIME: i32 = 0;
-static mut HUD_DISPLAY_TIME_MAX: i32 = 90;
-static mut FEATHERS_RED_COOLDOWN: f32 = 0.0;
-static mut FEATHERS_RED_COOLDOWN_GROUND_RATE: f32 = 1.25;
-static mut FEATHERS_RED_COOLDOWN_MAX: f32 = 450.0;
-static mut FLUTTER_STATE: i32 = 0; //0 inactive, 1 active, -1 disabled
+static mut BEAKBOMB_ACTIVE:[bool;8] = [false; 8];
+static mut BEAKBOMB_BOUNCE:[i32;8] = [1; 8]; //0-2 for strength. 0 for a normal wall
+static mut BEAKBOMB_ANGLE:[f32;8] = [0.0; 8];
+static mut BEAKBOMB_FRAME:[i32;8] = [0; 8]; //Used to determine if crashing or not
+static mut BAYONET_STATE:[i32;8] = [-1; 8]; //-1 not in Breegull. 0 in breegull. 1 request attack. 2 attack
+static mut BAYONET_EGGS:[i32;8] = [0; 8];
+static mut HUD_DISPLAY_TIME:[i32;8] = [0; 8];
+static mut FEATHERS_RED_COOLDOWN:[f32;8] = [0.0; 8];
+static mut FLUTTER_STATE:[i32;8] = [0; 8]; //0 inactive, 1 active, -1 disabled
+const HUD_DISPLAY_TIME_MAX: i32 = 90;
+const FEATHERS_RED_COOLDOWN_GROUND_RATE: f32 = 1.25;
+const FEATHERS_RED_COOLDOWN_MAX: f32 = 450.0;
+
 
 // Use a different move while using SideB in the air
 unsafe fn beakbomb_cancel(fighter: &mut L2CFighterCommon){ 
@@ -37,7 +38,7 @@ unsafe fn wonderwing_cancel(fighter: &mut L2CFighterCommon){
     }
 }
 //cancelFrame should be less than whatever frame a ShieldBonk starts on
-unsafe fn sidespecial_passive(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){ 
+unsafe fn sidespecial_passive(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){ 
     let side_special_wall = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL);
     if (!side_special_wall) {return;}
     let has_hit_shield = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
@@ -71,7 +72,7 @@ unsafe fn sidespecial_passive(fighter: &mut L2CFighterCommon, boma: &mut BattleO
     }
 }
 
-unsafe fn sidespecial_cancel(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn sidespecial_cancel(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let side_special = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH);
     if !side_special {return;}
 
@@ -86,16 +87,16 @@ unsafe fn sidespecial_cancel(fighter: &mut L2CFighterCommon, boma: &mut BattleOb
 	}
 }
 
-unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
-    if (!BEAKBOMB_ACTIVE)
+unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
+    if (!BEAKBOMB_ACTIVE[entry])
     {
-        BEAKBOMB_ACTIVE=true;
-        BEAKBOMB_BOUNCE=0;
+        BEAKBOMB_ACTIVE[entry]=true;
+        BEAKBOMB_BOUNCE[entry]=0;
         let stick_y: f32 = ControlModule::get_stick_y(boma);
-        BEAKBOMB_ANGLE = stick_y.signum();
+        BEAKBOMB_ANGLE[entry] = stick_y.signum();
         if (stick_y.abs())<0.1
         {
-            BEAKBOMB_ANGLE = 0.0;
+            BEAKBOMB_ANGLE[entry] = 0.0;
         }
         
         sv_kinetic_energy!(
@@ -117,7 +118,7 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     //Movement
     let motion_factor = 0.425;
     let motion_offset = -0.125;
-    let motion_vec = Vector3f{x: 0.0, y: motion_offset+(BEAKBOMB_ANGLE*motion_factor), z: 0.0};
+    let motion_vec = Vector3f{x: 0.0, y: motion_offset+(BEAKBOMB_ANGLE[entry]*motion_factor), z: 0.0};
     KineticModule::add_speed_outside(fighter.module_accessor, *KINETIC_OUTSIDE_ENERGY_TYPE_WIND_NO_ADDITION, &motion_vec);
 
     //Drop item
@@ -128,7 +129,7 @@ unsafe fn beakbomb_control(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     }
     */
 }
-unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let status = StatusModule::status_kind(fighter.module_accessor);
     let sideSpecial = [
         *FIGHTER_STATUS_KIND_SPECIAL_S,
@@ -139,61 +140,58 @@ unsafe fn beakbomb_check(fighter: &mut L2CFighterCommon, boma: &mut BattleObject
     let side_special_wall = fighter.is_status(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL);
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     
-	if (status == *FIGHTER_STATUS_KIND_SPECIAL_S && FEATHERS_RED_COOLDOWN >0.0 && in_Air)
+	if (status == *FIGHTER_STATUS_KIND_SPECIAL_S && FEATHERS_RED_COOLDOWN[entry] >0.0 && in_Air)
 	{
 		fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_FAIL, true);
 	}
 
-    //While BEAKBOMB_ACTIVE, enable control
+    //While BEAKBOMB_ACTIVE[entry], enable control
     if (side_special_dash && in_Air)
     {
-        BEAKBOMB_FRAME +=1;
-        beakbomb_checkForHit(fighter,boma);
-        beakbomb_control(fighter,boma);
+        BEAKBOMB_FRAME[entry] +=1;
+        beakbomb_checkForHit(fighter,boma,entry);
+        beakbomb_control(fighter,boma,entry);
     }
     else if (side_special_wall)
     {
-        beakbomb_bounce(fighter,boma);
+        beakbomb_wall(fighter,boma,entry);
     }
-    //Force out of BEAKBOMB_ACTIVE if landed
-    else if (!in_Air && BEAKBOMB_ACTIVE)
+    //Force out of BEAKBOMB_ACTIVE[entry] if landed
+    else if (!in_Air && BEAKBOMB_ACTIVE[entry])
     {
-        BEAKBOMB_ACTIVE=false;
+        BEAKBOMB_ACTIVE[entry]=false;
         if (side_special_wall)
         {
             fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_END, false);
         }
     }
-    //If out of SideSpecial (Dash), then set BEAKBOMB_ACTIVE to false
+    //If out of SideSpecial (Dash), then set BEAKBOMB_ACTIVE[entry] to false
     else if !(sideSpecial)
     {
-        BEAKBOMB_ACTIVE=false;
-        BEAKBOMB_FRAME=0;
+        BEAKBOMB_ACTIVE[entry]=false;
+        BEAKBOMB_FRAME[entry]=0;
     }
 
 }
 
-unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn beakbomb_checkForHit(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let has_hit_foe = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_HIT);
     let has_hit_shield = AttackModule::is_infliction_status(boma, *COLLISION_KIND_MASK_SHIELD);
-    if !(has_hit_shield 
-        //|| has_hit_foe
-    ) 
-    {
-        beakbomb_checkForFail(fighter,boma);
+    if !(has_hit_shield) {
+        beakbomb_checkForFail(fighter,boma,entry);
         return;
     }
     if (fighter.motion_frame() > 0.0) //If motion frame is 0, game crashes
     {
         let start_frame = 6.0;
         let weak_frame = 20.0;
-        BEAKBOMB_BOUNCE = if (fighter.motion_frame() >= weak_frame) {1} else {2};
+        BEAKBOMB_BOUNCE[entry] = if (fighter.motion_frame() >= weak_frame) {1} else {2};
         fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_WALL, false);
         //MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, start_frame, true, true, false);
     }
 }
 
-unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn beakbomb_wall(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let start_frame = 6.0;
     if fighter.is_motion(Hash40::new("special_air_s_wall"))
     && fighter.motion_frame() < start_frame
@@ -201,30 +199,30 @@ unsafe fn beakbomb_bounce(fighter: &mut L2CFighterCommon, boma: &mut BattleObjec
 
         KineticModule::resume_energy(boma, *FIGHTER_KINETIC_ENERGY_ID_CONTROL);
             //WorkModule::off_flag(boma, *FIGHTER_STATUS_ATTACK_AIR_FLAG_ENABLE_LANDING);
-            let x_bounce = match BEAKBOMB_BOUNCE{
+            let x_bounce = match BEAKBOMB_BOUNCE[entry]{
                 0=> -1.0,
                 2=> -2.0,
                 _=> -1.5
             };
-            let y_bounce = if (BEAKBOMB_BOUNCE<1) {0.5} else {1.0};
+            let y_bounce = if (BEAKBOMB_BOUNCE[entry]<1) {0.5} else {1.0};
             WorkModule::off_flag(boma, *FIGHTER_STATUS_WORK_ID_FLAG_RESERVE_GRAVITY_STABLE_UNABLE);
             SET_SPEED_EX(fighter, x_bounce, y_bounce, *KINETIC_ENERGY_RESERVE_ATTRIBUTE_MAIN);
-			if (BEAKBOMB_BOUNCE==0){
+			if (BEAKBOMB_BOUNCE[entry]==0){
 
 			}
-            BEAKBOMB_ACTIVE = false;
+            BEAKBOMB_ACTIVE[entry] = false;
     }
-	else if (fighter.motion_frame() >= 17.0 && BEAKBOMB_BOUNCE==0)
+	else if (fighter.motion_frame() >= 17.0 && BEAKBOMB_BOUNCE[entry]==0)
 	{
         WorkModule::on_flag(boma, /*Flag*/ *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_LANDING_HEAVY);
 	}
 }
 
-unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let is_grounded = fighter.is_situation(*SITUATION_KIND_GROUND);
     let cancel_frame = 1;
     let cancel_cutoff = 25;
-    let can_fail = cancel_frame < BEAKBOMB_FRAME && BEAKBOMB_FRAME < cancel_cutoff;
+    let can_fail = cancel_frame < BEAKBOMB_FRAME[entry] && BEAKBOMB_FRAME[entry] < cancel_cutoff;
     if !(is_grounded) {return;}
 
     if (can_fail)
@@ -240,15 +238,15 @@ unsafe fn beakbomb_checkForFail(fighter: &mut L2CFighterCommon, boma: &mut Battl
 
 }
 
-unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
     if (in_Air)
     {
-        BAYONET_STATE=-1;
+        BAYONET_STATE[entry]=-1;
         return;
     }
 
-    //println!("{}",BAYONET_STATE);
+    //println!("{}",BAYONET_STATE[entry]);
     let status = StatusModule::status_kind(fighter.module_accessor);
     if [
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT,
@@ -257,10 +255,10 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_TURN,
         *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_LANDING
     ].contains(&status) {
-        if (BAYONET_STATE<=0)
+        if (BAYONET_STATE[entry]<=0)
         {
-			BAYONET_EGGS= WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
-			BAYONET_STATE=0;
+			BAYONET_EGGS[entry]= WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+			BAYONET_STATE[entry]=0;
             let is_csticking = ControlModule::get_command_flag_cat(fighter.module_accessor, 0) & *FIGHTER_PAD_CMD_CAT1_FLAG_ATTACK_S4 != 0;
 
             let transition_frame = 3.0;
@@ -268,7 +266,7 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
             if (is_csticking && can_cancel) {
                 println!("CStick");
                 fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
-                BAYONET_STATE=1;
+                BAYONET_STATE[entry]=1;
             }
         }
         else //Force change if previous block did not work
@@ -276,18 +274,18 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
             fighter.change_status_req(*FIGHTER_STATUS_KIND_ATTACK_S3, true);
         }
     }
-    else if (status == *FIGHTER_STATUS_KIND_ATTACK_S3 && BAYONET_STATE>=0)
+    else if (status == *FIGHTER_STATUS_KIND_ATTACK_S3 && BAYONET_STATE[entry]>=0)
     {
         let transition_frame = 21.0;
         let can_cancel = fighter.motion_frame() >= transition_frame;
         if (!can_cancel) {return;}
-        BAYONET_STATE=2;
+        BAYONET_STATE[entry]=2;
         fighter.change_status_req(*FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START, true);
     }
-    else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START && BAYONET_STATE==2)
+    else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_N_SHOOT_START && BAYONET_STATE[entry]==2)
     {
-        BAYONET_STATE=0;
-		WorkModule::set_int(fighter.module_accessor,BAYONET_EGGS, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
+        BAYONET_STATE[entry]=0;
+		WorkModule::set_int(fighter.module_accessor,BAYONET_EGGS[entry], *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
         STOP_SE(fighter, Hash40::new("se_buddy_attackhard_s03"));
         let transition_frame = 26.0;
         ArticleModule::change_motion(fighter.module_accessor, *FIGHTER_BUDDY_GENERATE_ARTICLE_PARTNER, Hash40::new("special_n_start"), false, transition_frame);
@@ -295,11 +293,11 @@ unsafe fn breegull_bayonet(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
     }
     else
     {
-        BAYONET_STATE=-1;
+        BAYONET_STATE[entry]=-1;
     }
 }
 
-unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool) {
+unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool,entry: usize) {
 	EffectModule::kill_kind(boma, Hash40::new("buddy_special_s_count"), false, true);
 
     let FEATHERS_GOLD_COUNT = WorkModule::get_int(boma,  *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_S_REMAIN);
@@ -327,13 +325,13 @@ unsafe fn buddy_meter_display_update(fighter: &mut L2CFighterCommon, boma: &mut 
 	if (RedFeather)
 	{
 		uv_offset_x = -1.5;
-		uv_offset_y = if (FEATHERS_RED_COOLDOWN == 0.0) {0.2} else {0.0};
+		uv_offset_y = if (FEATHERS_RED_COOLDOWN[entry] == 0.0) {0.2} else {0.0};
 		EffectModule::set_rgb(boma,handle, 1.0, 0.3, 0.0);
 	}
 	EffectModule::set_custom_uv_offset(boma, handle, &Vector2f::new(uv_offset_x,uv_offset_y), 0);
 }
 
-unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool){
+unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,RedFeather: bool,entry: usize){
     let status = StatusModule::status_kind(fighter.module_accessor);
     let side_special = [
         *FIGHTER_STATUS_KIND_SPECIAL_S,
@@ -344,34 +342,34 @@ unsafe fn buddy_meter_display(fighter: &mut L2CFighterCommon, boma: &mut BattleO
     ].contains(&status);
 	if (side_special && fighter.motion_frame()<=2.0)
 	{
-		buddy_meter_display_update(fighter,boma,RedFeather);
-		HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
+		buddy_meter_display_update(fighter,boma,RedFeather,entry);
+		HUD_DISPLAY_TIME[entry]=HUD_DISPLAY_TIME_MAX;
 	}
-	if (HUD_DISPLAY_TIME>0)
+	if (HUD_DISPLAY_TIME[entry]>0)
 	{
-		HUD_DISPLAY_TIME-=1;
+		HUD_DISPLAY_TIME[entry]-=1;
 	}
 	else
 	{
 		EffectModule::kill_kind(boma, Hash40::new("buddy_special_s_count"), false, true);
 	}
 }
-unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
     let status = StatusModule::status_kind(fighter.module_accessor);
     let in_Air = fighter.is_prev_situation(*SITUATION_KIND_AIR);
-	if (FEATHERS_RED_COOLDOWN>0.0)
+	if (FEATHERS_RED_COOLDOWN[entry]>0.0)
 	{
 		let cool = if (in_Air) {1.0} else {FEATHERS_RED_COOLDOWN_GROUND_RATE};
-		FEATHERS_RED_COOLDOWN -= cool;
-		if (FEATHERS_RED_COOLDOWN<=0.0)
+		FEATHERS_RED_COOLDOWN[entry] -= cool;
+		if (FEATHERS_RED_COOLDOWN[entry]<=0.0)
 		{
-			FEATHERS_RED_COOLDOWN = 0.0;
+			FEATHERS_RED_COOLDOWN[entry] = 0.0;
             WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
 			app::FighterUtil::flash_eye_info(fighter.module_accessor);
-			if (HUD_DISPLAY_TIME==0)
+			if (HUD_DISPLAY_TIME[entry]==0)
 			{
-				buddy_meter_display_update(fighter,boma,true);
-				HUD_DISPLAY_TIME=HUD_DISPLAY_TIME_MAX;
+				buddy_meter_display_update(fighter,boma,true,entry);
+				HUD_DISPLAY_TIME[entry]=HUD_DISPLAY_TIME_MAX;
 			}
 		}
         else if (in_Air)
@@ -383,22 +381,22 @@ unsafe fn buddy_meter_controller(fighter: &mut L2CFighterCommon, boma: &mut Batt
             WorkModule::off_flag(boma, *FIGHTER_BUDDY_STATUS_SPECIAL_S_FLAG_FAIL);
 		}
 	}
-	buddy_meter_display(fighter,boma,in_Air);
+	buddy_meter_display(fighter,boma,in_Air,entry);
     if (fighter.motion_frame() <= 2.0 && in_Air)
     {
         if (status == *FIGHTER_STATUS_KIND_CLIFF_CATCH
-        && FEATHERS_RED_COOLDOWN > FEATHERS_RED_COOLDOWN_MAX-5.0)
+        && FEATHERS_RED_COOLDOWN[entry] > FEATHERS_RED_COOLDOWN_MAX-5.0)
         {
-            FEATHERS_RED_COOLDOWN = 1.0;
+            FEATHERS_RED_COOLDOWN[entry] = 1.0;
         }
         else if (status == *FIGHTER_BUDDY_STATUS_KIND_SPECIAL_S_DASH)
         {
-            FEATHERS_RED_COOLDOWN = FEATHERS_RED_COOLDOWN_MAX;
+            FEATHERS_RED_COOLDOWN[entry] = FEATHERS_RED_COOLDOWN_MAX;
         }
 	}
 }
 
-unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
 	let status = StatusModule::status_kind(fighter.module_accessor);
 	if fighter.is_motion(Hash40::new("jump_aerial_f2"))
 	{
@@ -407,7 +405,7 @@ unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleA
 		let speed_y = KineticModule::get_sum_speed_y(boma,*FIGHTER_KINETIC_ENERGY_ID_GRAVITY);
 		let can_flutter = fighter.motion_frame() < flutter_frame
 		&& speed_y < 0.5
-		&& FLUTTER_STATE >= 0;
+		&& FLUTTER_STATE[entry] >= 0;
 		if (is_jumping && can_flutter) {
 			sv_kinetic_energy!(
 				set_accel,
@@ -425,20 +423,20 @@ unsafe fn flutter(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleA
 					speed_y_min
 				);
 			}
-			FLUTTER_STATE=1;
+			FLUTTER_STATE[entry]=1;
 		}
-		else if (!is_jumping && FLUTTER_STATE==1)
+		else if (!is_jumping && FLUTTER_STATE[entry]==1)
 		{
-			FLUTTER_STATE= -1;
+			FLUTTER_STATE[entry]= -1;
 			KineticModule::change_kinetic(fighter.module_accessor, *FIGHTER_KINETIC_TYPE_FALL);
 		}
 	}
 	else
 	{
-		FLUTTER_STATE=0;
+		FLUTTER_STATE[entry]=0;
 	}
 }
-unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor){
+unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObjectModuleAccessor,entry: usize){
 	let eggs_shot = WorkModule::get_int(fighter.module_accessor, *FIGHTER_BUDDY_INSTANCE_WORK_ID_INT_SPECIAL_N_BAKYUN_BULLET_SHOOT_COUNT);
     let eggs_Weakest = WorkModule::get_param_int(fighter.module_accessor,hash40("param_special_n"),hash40("bakyun_power_down_2_num"));
     let eggs_Weak = eggs_Weakest-5;
@@ -457,7 +455,7 @@ unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
 }
 
 
-unsafe fn dair_bounce(fighter: &mut L2CFighterCommon){
+unsafe fn dair_bounce(fighter: &mut L2CFighterCommon,entry: usize){
     if fighter.is_motion(Hash40::new("attack_air_lw"))
     && fighter.motion_frame() < 45.0
     {
@@ -472,14 +470,15 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
     unsafe {
         let lua_state = fighter.lua_state_agent;    
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+		let entry = WorkModule::get_int(boma, *FIGHTER_INSTANCE_WORK_ID_INT_ENTRY_ID) as usize;
     
-        sidespecial_cancel(fighter,boma);
-        sidespecial_passive(fighter,boma);
-        beakbomb_check(fighter,boma);
-        breegull_bayonet(fighter,boma);
-		buddy_meter_controller(fighter,boma);
-		breegull_fatigue(fighter,boma);
-		dair_bounce(fighter);
+        sidespecial_cancel(fighter,boma,entry);
+        sidespecial_passive(fighter,boma,entry);
+        beakbomb_check(fighter,boma,entry);
+        breegull_bayonet(fighter,boma,entry);
+		buddy_meter_controller(fighter,boma,entry);
+		breegull_fatigue(fighter,boma,entry);
+		dair_bounce(fighter,entry);
 		//flutter(fighter,boma);
     }
 }
@@ -489,8 +488,11 @@ fn buddy_reset(fighter: &mut L2CFighterCommon) {
     unsafe {
         let lua_state = fighter.lua_state_agent;    
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
+		let entry = WorkModule::get_int(boma, *FIGHTER_INSTANCE_WORK_ID_INT_ENTRY_ID) as usize;
         if fighter.kind() == *FIGHTER_KIND_BUDDY {
-			FEATHERS_RED_COOLDOWN = 0.0;
+            BEAKBOMB_ACTIVE[entry] = false;
+            BAYONET_STATE[entry] = 0;
+			FEATHERS_RED_COOLDOWN[entry] = 0.0;
         }
     }
 }
