@@ -455,7 +455,7 @@ unsafe fn breegull_fatigue(fighter: &mut L2CFighterCommon, boma: &mut BattleObje
 }
 
 
-unsafe fn dair_bounce(fighter: &mut L2CFighterCommon,entry: usize){
+unsafe fn dair_bounce(fighter: &mut L2CFighterCommon){
     if fighter.is_motion(Hash40::new("attack_air_lw"))
     && fighter.motion_frame() < 45.0
     {
@@ -463,6 +463,14 @@ unsafe fn dair_bounce(fighter: &mut L2CFighterCommon,entry: usize){
             MotionModule::set_frame_sync_anim_cmd(fighter.module_accessor, 45.0, true, true, false);
         }
     }
+}
+
+unsafe fn on_rebirth(fighter: &mut L2CFighterCommon,entry: usize)
+{
+    BEAKBOMB_ACTIVE[entry] = false;
+    BAYONET_STATE[entry] = 0;
+    FEATHERS_RED_COOLDOWN[entry] = 0.0;
+    HUD_DISPLAY_TIME[entry] = 1;
 }
 
 #[fighter_frame( agent = FIGHTER_KIND_BUDDY )]
@@ -478,7 +486,11 @@ fn buddy_update(fighter: &mut L2CFighterCommon) {
         breegull_bayonet(fighter,boma,entry);
 		buddy_meter_controller(fighter,boma,entry);
 		breegull_fatigue(fighter,boma,entry);
-		dair_bounce(fighter,entry);
+		dair_bounce(fighter);
+        if (fighter.is_status(*FIGHTER_STATUS_KIND_REBIRTH))
+        {
+            on_rebirth(fighter,entry);
+        }
 		//flutter(fighter,boma);
     }
 }
@@ -490,9 +502,7 @@ fn buddy_reset(fighter: &mut L2CFighterCommon) {
         let boma = smash::app::sv_system::battle_object_module_accessor(lua_state);
 		let entry = WorkModule::get_int(boma, *FIGHTER_INSTANCE_WORK_ID_INT_ENTRY_ID) as usize;
         if fighter.kind() == *FIGHTER_KIND_BUDDY {
-            BEAKBOMB_ACTIVE[entry] = false;
-            BAYONET_STATE[entry] = 0;
-			FEATHERS_RED_COOLDOWN[entry] = 0.0;
+            on_rebirth(fighter,entry);
         }
     }
 }
