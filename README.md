@@ -31,6 +31,7 @@ Kazooie's hitbox juggles opponents into the air. While it is unsafe on shield, i
 Advantages:
 - Hits on both sides
 - Better for juggling
+
 Disadvantages:
 - Doesn't anti-air as well
 - Worse for KOing
